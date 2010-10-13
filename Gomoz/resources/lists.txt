@@ -1,0 +1,7 @@
+index.php?site=[path]
+forum/index.php?site=[path]
+board/index.php?site=[path]
+index.php?url=[path]
+index.php?p=[path]
+index.php?openfile=[path]
+index.php?file=[path]

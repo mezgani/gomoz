@@ -1,11 +1,11 @@
 __software__= "gomoz"
-__author__ = "Handrix securfox@gmail.com"
+__author__ = "MEZGANI Ali handrix@gmail.com"
 __version__ = "1.0.1"
 __cvsversion__ = "Revision: 1.0"
-__date__ = "Date: 2007/10/01 23:46:07"
-__copyright__ = "Copyright (c) securfox"
+__date__ = "Date: 2006"
+__copyright__ = "Copyright (c) native labs"
 __license__="GPL"
-__credits__ = "Thanks  securfox for support"
+__credits__ = "Thanks  mam for support"
 __url__="http://http://groups.google.com/gomoz"
 
 

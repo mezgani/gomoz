@@ -1,0 +1,72 @@
+<?xml version="1.0" ?>
+<gomoz>
+	<scan date="00:00:00 00:00:00" exploit="index.php?page=" request="1" status="stopped" url="127.0.0.1"/>
+	<scan date="2001-06-18 08:44" exploit="index.php?url=" request="350" status="joe" url="217.0.0.1"/>
+	<scan date="00:00:00" exploit="index.php?page=" request="1" status="stopped" url="127.0.0.1"/>
+	<scan date="jmt2715" exploit="2004-06-18 08:44" request="975435" status="started" url="wxMenu anchor right position in wxMenuBar"/>
+	<scan date="00:00:00" exploit="index.php?page=" request="1" status="stopped" url="127.0.0.1"/>
+	<scan date="jmt2715" exploit="2004-06-18 08:44" request="975435" status="started" url="wxMenu anchor right position in wxMenuBar"/>
+	<scan date="00:00:00" exploit="index.php?page=" request="1" status="stopped" url="127.0.0.1"/>
+	<scan date="jmt2715" exploit="2004-06-18 08:44" request="975435" status="started" url="wxMenu anchor right position in wxMenuBar"/>
+	<scan date="00:00:00" exploit="index.php?page=" request="1" status="stopped" url="127.0.0.1"/>
+	<scan date="jmt2715" exploit="2004-06-18 08:44" request="975435" status="started" url="wxMenu anchor right position in wxMenuBar"/>
+	<scan date="00:00:00" exploit="index.php?page=" request="1" status="stopped" url="127.0.0.1"/>
+	<scan date="jmt2715" exploit="2004-06-18 08:44" request="975435" status="started" url="wxMenu anchor right position in wxMenuBar"/>
+	<scan date="00:00:00" exploit="index.php?page=" request="1" status="stopped" url="127.0.0.1"/>
+	<scan date="jmt2715" exploit="2004-06-18 08:44" request="975435" status="started" url="wxMenu anchor right position in wxMenuBar"/>
+	<scan date="00:00:00" exploit="index.php?page=" request="1" status="stopped" url="127.0.0.1"/>
+	<scan date="jmt2715" exploit="2004-06-18 08:44" request="975435" status="started" url="wxMenu anchor right position in wxMenuBar"/>
+	<scan date="00:00:00" exploit="index.php?page=" request="1" status="stopped" url="127.0.0.1"/>
+	<scan date="jmt2715" exploit="2004-06-18 08:44" request="975435" status="started" url="wxMenu anchor right position in wxMenuBar"/>
+	<scan date="00:00:00" exploit="index.php?page=" request="1" status="stopped" url="127.0.0.1"/>
+	<scan date="jmt2715" exploit="2004-06-18 08:44" request="975435" status="started" url="wxMenu anchor right position in wxMenuBar"/>
+	<scan date="00:00:00" exploit="index.php?page=" request="1" status="stopped" url="127.0.0.1"/>
+	<scan date="jmt2715" exploit="2004-06-18 08:44" request="975435" status="started" url="wxMenu anchor right position in wxMenuBar"/>
+	<scan date="00:00:00" exploit="index.php?page=" request="1" status="stopped" url="127.0.0.1"/>
+	<scan date="jmt2715" exploit="2004-06-18 08:44" request="975435" status="started" url="wxMenu anchor right position in wxMenuBar"/>
+	<scan date="00:00:00" exploit="index.php?page=" request="1" status="stopped" url="127.0.0.1"/>
+	<scan date="jmt2715" exploit="2004-06-18 08:44" request="975435" status="started" url="wxMenu anchor right position in wxMenuBar"/>
+	<scan date="00:00:00" exploit="index.php?page=" request="1" status="stopped" url="127.0.0.1"/>
+	<scan date="jmt2715" exploit="2004-06-18 08:44" request="975435" status="started" url="wxMenu anchor right position in wxMenuBar"/>
+	<scan date="00:00:00" exploit="index.php?page=" request="1" status="stopped" url="127.0.0.1"/>
+	<scan date="jmt2715" exploit="2004-06-18 08:44" request="975435" status="started" url="wxMenu anchor right position in wxMenuBar"/>
+	<scan date="00:00:00" exploit="index.php?page=" request="1" status="stopped" url="127.0.0.1"/>
+	<scan date="jmt2715" exploit="2004-06-18 08:44" request="975435" status="started" url="wxMenu anchor right position in wxMenuBar"/>
+	<scan date="00:00:00" exploit="index.php?page=" request="1" status="stopped" url="127.0.0.1"/>
+	<scan date="jmt2715" exploit="2004-06-18 08:44" request="975435" status="started" url="wxMenu anchor right position in wxMenuBar"/>
+	<scan date="00:00:00" exploit="index.php?page=" request="1" status="stopped" url="127.0.0.1"/>
+	<scan date="jmt2715" exploit="2004-06-18 08:44" request="975435" status="started" url="wxMenu anchor right position in wxMenuBar"/>
+	<scan date="00:00:00" exploit="index.php?page=" request="1" status="stopped" url="127.0.0.1"/>
+	<scan date="jmt2715" exploit="2004-06-18 08:44" request="975435" status="started" url="wxMenu anchor right position in wxMenuBar"/>
+	<scan date="00:00:00" exploit="index.php?page=" request="1" status="stopped" url="127.0.0.1"/>
+	<scan date="jmt2715" exploit="2004-06-18 08:44" request="975435" status="started" url="wxMenu anchor right position in wxMenuBar"/>
+	<scan date="00:00:00" exploit="index.php?page=" request="1" status="stopped" url="127.0.0.1"/>
+	<scan date="jmt2715" exploit="2004-06-18 08:44" request="975435" status="started" url="wxMenu anchor right position in wxMenuBar"/>
+	<scan date="00:00:00" exploit="index.php?page=" request="1" status="stopped" url="127.0.0.1"/>
+	<scan date="jmt2715" exploit="2004-06-18 08:44" request="975435" status="started" url="wxMenu anchor right position in wxMenuBar"/>
+	<scan date="00:00:00" exploit="index.php?page=" request="1" status="stopped" url="127.0.0.1"/>
+	<scan date="jmt2715" exploit="2004-06-18 08:44" request="975435" status="started" url="wxMenu anchor right position in wxMenuBar"/>
+	<scan date="00:00:00" exploit="index.php?page=" request="1" status="stopped" url="127.0.0.1"/>
+	<scan date="jmt2715" exploit="2004-06-18 08:44" request="975435" status="started" url="wxMenu anchor right position in wxMenuBar"/>
+	<scan date="00:00:00" exploit="index.php?page=" request="1" status="stopped" url="127.0.0.1"/>
+	<scan date="jmt2715" exploit="2004-06-18 08:44" request="975435" status="started" url="wxMenu anchor right position in wxMenuBar"/>
+	<scan date="00:00:00" exploit="index.php?page=" request="1" status="stopped" url="127.0.0.1"/>
+	<scan date="jmt2715" exploit="2004-06-18 08:44" request="975435" status="started" url="wxMenu anchor right position in wxMenuBar"/>
+	<scan date="00:00:00" exploit="index.php?page=" request="1" status="stopped" url="127.0.0.1"/>
+	<scan date="jmt2715" exploit="2004-06-18 08:44" request="975435" status="started" url="wxMenu anchor right position in wxMenuBar"/>
+	<scan date="00:00:00" exploit="index.php?page=" request="1" status="stopped" url="127.0.0.1"/>
+	<scan date="jmt2715" exploit="2004-06-18 08:44" request="975435" status="started" url="wxMenu anchor right position in wxMenuBar"/>
+	<scan date="00:00:00" exploit="index.php?page=" request="1" status="stopped" url="127.0.0.1"/>
+	<scan date="jmt2715" exploit="2004-06-18 08:44" request="975435" status="started" url="wxMenu anchor right position in wxMenuBar"/>
+	<scan date="00:00:00" exploit="index.php?page=" request="1" status="stopped" url="127.0.0.1"/>
+	<scan date="jmt2715" exploit="2004-06-18 08:44" request="975435" status="started" url="wxMenu anchor right position in wxMenuBar"/>
+	<scan date="00:00:00" exploit="index.php?page=" request="1" status="stopped" url="127.0.0.1"/>
+	<scan date="jmt2715" exploit="2004-06-18 08:44" request="975435" status="started" url="wxMenu anchor right position in wxMenuBar"/>
+	<scan date="00:00:00" exploit="index.php?page=" request="1" status="stopped" url="127.0.0.1"/>
+	<scan date="jmt2715" exploit="2004-06-18 08:44" request="975435" status="started" url="wxMenu anchor right position in wxMenuBar"/>
+	<scan date="00:00:00" exploit="index.php?page=" request="1" status="stopped" url="127.0.0.1"/>
+	<scan date="jmt2715" exploit="2004-06-18 08:44" request="975435" status="started" url="wxMenu anchor right position in wxMenuBar"/>
+	<scan date="00:00:00" exploit="index.php?page=" request="1" status="stopped" url="127.0.0.1"/>
+	<scan date="jmt2715" exploit="2004-06-18 08:44" request="975435" status="started" url="wxMenu anchor right position in wxMenuBar"/>
+	<menu exploit="Load exploits from file" include="http://www.example.com/cmd.php" proxy="proxy:port" url="Enter target"/>
+</gomoz>

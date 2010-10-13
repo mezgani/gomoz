@@ -1,0 +1,4 @@
+#ConfigFile:
+
+url="http://antihackerlink.or.id/r57.txt"
+keyword="Listing folder"

