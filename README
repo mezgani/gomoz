@@ -1,3 +1,9 @@
+##############################################################################################
+# The software still on alpha version, please don't try to use it, even of you feel that you #
+# may participate to it developement.                                                        #
+##############################################################################################
+
+
 __software__= "gomoz"
 __author__ = "MEZGANI Ali handrix@gmail.com"
 __version__ = "1.0.1"
