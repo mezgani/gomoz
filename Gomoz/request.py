@@ -94,6 +94,8 @@ class Request(threading.Thread):
         #proxy syntax => proxy:port
       dfto=socket.getdefaulttimeout()
       socket.setdefaulttimeout(3)
+      
+
 
       if self.proxy is None or self.proxy == '':
          opener = urllib2.build_opener()
@@ -110,12 +112,15 @@ class Request(threading.Thread):
           urllib2.install_opener(opener)
           try:
               req = urllib2.Request(url)
-              req.add_header('Referer', 'www.google.com')
-              if urllib2.urlopen(req):
-                 print "ok" 
-                 f = urllib2.urlopen(req,timeout=2)
+              req.add_header('Referer', 'www.securynix.com')
+              print url
+              f=urllib2.urlopen(url, timeout=4)
+              print f
+              #   print "ok" 
+              #   f = urllib2.urlopen(req,timeout=2)
                  #f = urllib2.urlopen(req,timeout=2) 
-                 return  f.read()
+              if f is not None:
+                  return  f.read()
               else:
                  print "non" 
                  return None

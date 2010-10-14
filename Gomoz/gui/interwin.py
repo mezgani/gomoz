@@ -2,11 +2,12 @@
 
 import wx, glob
 import time
-import gmenubar, glistctrl, gtoolbar, gstatusbar, Gomoz.request as request
+import gmenubar, glistctrl, gtoolbar, gstatusbar
+import  Gomoz.request as request
 
 from wx.py.shell import ShellFrame
 from ids import *
-#import menubrush 
+
 
 
 
@@ -52,6 +53,9 @@ class InterGomoz(wx.Frame):
         self.SetGomozMenuBar(self.lc_sources)
         #self.hwnd = self.GetHandle()
         #menubrush.ChangeMenuBarColor(self)  
+        
+        
+        
 
 
     def _checklist(self):
@@ -92,6 +96,7 @@ class InterGomoz(wx.Frame):
         self.statusbar=gstatusbar.GomozStatusBar(self)
         self.statusbar.SetForegroundColour(wx.RED)
         self.statusbar.SetBackgroundColour(wx.BLACK)
+        self.SetStatusText("4",1)        
         self.SetStatusBar(self.statusbar)
      
 
@@ -195,8 +200,8 @@ class InterGomoz(wx.Frame):
     def InputScan(self, req, status):
         #import glistctrl
         #glistctrl.CheckListCtrl.SetImageServer(self.checklister,'apache')
-        defaultx="Load exploits from file"
-        default = "Enter target"
+        defaultx=""
+        default =""
         if self.cb_exploit.GetValue() != default or self.cb_targets.GetValue() !=default :
             num_items = self.lc_sources.GetItemCount()
            
@@ -240,9 +245,6 @@ class InterGomoz(wx.Frame):
 
 
     def CheckScan(self, target, exploit, mode):
-  
-
-    
         for i in range(len(target)):
             target[i]=target[i].replace('\n','')
 
@@ -263,6 +265,10 @@ class InterGomoz(wx.Frame):
                     txtinc=txt.split('=')[1].replace('\n','')
                 if txt.find('JPGinc') != -1:
                     jpginc=txt.split('=')[1].replace('\n','')
+                if txt.find('ASPinc') != -1:
+                    aspinc=txt.split('=')[1].replace('\n','')
+                if txt.find('JSPinc') != -1:
+                    jspinc=txt.split('=')[1].replace('\n','')                        
                 if txt.find('KEYword') != -1:
                     keyword=txt.split('=')[1].replace('\n','')
                 if txt.find('OPTscan') != -1:
@@ -300,7 +306,7 @@ class InterGomoz(wx.Frame):
 
         #print end-start
         
-        fd=open('log/gomoz.log','a')          
+        fd=open('Gomoz/log/gomoz.log','a')          
         try:
             k = 0
             for url in tempo:
@@ -393,7 +399,7 @@ class InterGomoz(wx.Frame):
         #self.cb_targets.SetSelection(1)
         self.cb_targets.SetBackgroundColour(wx.BLACK)
         self.cb_targets.SetForegroundColour(wx.GREEN)
-        self.cb_targets.SetValue("Enter target")
+        self.cb_targets.SetValue("")
         
         self.label_4 = wx.StaticText(self, -1, ("Scan:"))
         #self.label_4.SetFont(wx.Font(8, wx.ROMAN, wx.NORMAL, wx.BOLD))
@@ -446,7 +452,7 @@ class InterGomoz(wx.Frame):
         #self.cb_exploit.SetFont(wx.Font(8, wx.SWISS, wx.NORMAL, wx.BOLD))
         self.cb_exploit.SetBackgroundColour(wx.BLACK)
         self.cb_exploit.SetForegroundColour(wx.GREEN)
-        self.cb_exploit.SetValue("Load exploits from file")  
+        self.cb_exploit.SetValue("")  
        
          
         
@@ -535,7 +541,7 @@ class InterGomoz(wx.Frame):
     def OnConsole(self, event):
         console=self.OnGetRows()
         if console is None or console =="":
-            console="nonamed"
+            console="NoNamed"
         self.notebook_console = wx.Panel(self.notebook, -1)
         self.notebook_console.SetAutoLayout(True)
         self.notebook_console.SetBackgroundColour('wx.BLACK')

@@ -1,17 +1,19 @@
 import wx, time, os, sys, re
 from xml.dom.minidom import Document
 import xmlparser
-import interwin, gtoolbar, about, glistctrl, data, gstatusbar, ghelp
+import interwin, gtoolbar, about
+import glistctrl, data, gstatusbar, ghelp
 from ids import *
 
 import threading
-#import portscan
-import Gomoz.gsqlite
+import Gomoz.gsqlite as gsqlite
 
 class GomozMenuBar(gtoolbar.GomozToolBar, threading.Thread):
     
     def __init__(self, frame, panel, sources):
-
+        # Initializing the toolbar object
+        gtoolbar.GomozToolBar.__init__(self, frame, panel, sources)
+      
         # Menu Bar
         self.frame = frame
         self.frame_menubar=wx.MenuBar()
@@ -29,7 +31,7 @@ class GomozMenuBar(gtoolbar.GomozToolBar, threading.Thread):
 
         self.frame.menu_file = wx.Menu()
         self.frame.smenu_new = wx.MenuItem(self.frame.menu_file, MN_NEW, ("&New...\tCtrl-N"), "New scan", wx.ITEM_NORMAL)
-        bmp = wx.Bitmap("Gomoz/image//new_scan.png", wx.BITMAP_TYPE_PNG)
+        bmp = wx.Bitmap("Gomoz/image/new_scan.png", wx.BITMAP_TYPE_PNG)
         self.frame.smenu_new.SetBitmap(bmp)
         
         self.frame.menu_file.AppendItem(self.frame.smenu_new)
@@ -75,10 +77,7 @@ class GomozMenuBar(gtoolbar.GomozToolBar, threading.Thread):
         self.frame_menubar.Append(self.frame.menu_data, ("&Data"))
 
         self.frame.menu_options = wx.Menu()
-        #self.frame.smenu_sortasc = wx.MenuItem(self.frame.menu_options, MN_SORTASC, ("&Sort ascending\tCtrl-A"),"Sort result ascending", wx.ITEM_NORMAL)
-        #self.frame.smenu_sortdsc = wx.MenuItem(self.frame.menu_options, MN_SORTDSC, ("&Sort descending\tCtrl-D"),"Sort result descending", wx.ITEM_NORMAL)
-        #self.frame.smenu_sortexp = wx.MenuItem(self.frame.menu_options, MN_SORTEXP, ("&Sort by exploit\tCtrl-X"),"Sort result by exploit", wx.ITEM_NORMAL)
-        
+           
         self.frame.smenu_selcall = wx.MenuItem(self.frame.menu_options, MN_SELCALL, ("&Select  all\tCtrl-A"),"Select all", wx.ITEM_NORMAL)
         self.frame.smenu_selcnon = wx.MenuItem(self.frame.menu_options, MN_SELCNON, ("&Select None\tCtrl-Alt-A"),"Select None", wx.ITEM_NORMAL)
         self.frame.smenu_fgcolor = wx.MenuItem(self.frame.menu_options, MN_FGCOLOR, ("&Set text colour\tCtrl-Alt-T"),"Set request text colour", wx.ITEM_NORMAL)
@@ -86,18 +85,13 @@ class GomozMenuBar(gtoolbar.GomozToolBar, threading.Thread):
         self.frame.smenu_enedit  = wx.MenuItem(self.frame.menu_options, MN_ENEDIT,  ("&Enable request editing\tCtrl-Alt-N"),"Enable request editing", wx.ITEM_CHECK)
         self.frame.smenu_editit  = wx.MenuItem(self.frame.menu_options, MN_EDITIT,  ("&Edit current request\tCtrl-Alt-E"),"Edit current request", wx.ITEM_NORMAL)    
 
-##      self.frame.menu_options.AppendItem(self.frame.smenu_sortasc)
-##      self.frame.menu_options.AppendItem(self.frame.smenu_sortdsc)
-##      self.frame.menu_options.AppendItem(self.frame.smenu_sortexp)
-##      self.frame.menu_options.AppendSeparator()
+
         self.frame.menu_options.AppendItem(self.frame.smenu_selcall)
         self.frame.menu_options.AppendItem(self.frame.smenu_selcnon)
         self.frame.menu_options.AppendSeparator()
         self.frame.menu_options.AppendItem(self.frame.smenu_fgcolor)
         self.frame.menu_options.AppendItem(self.frame.smenu_bgcolor)
-##      self.frame.menu_options.AppendSeparator()
-##      self.frame.menu_options.AppendItem(self.frame.smenu_enedit)
-##      self.frame.menu_options.AppendItem(self.frame.smenu_editit)
+
         
         self.frame_menubar.Append(self.frame.menu_options, "&Options")
       
@@ -120,8 +114,6 @@ class GomozMenuBar(gtoolbar.GomozToolBar, threading.Thread):
         # Menu Bar end
        
         self.__init_events()
-
-
 
 
 
@@ -189,7 +181,9 @@ class GomozMenuBar(gtoolbar.GomozToolBar, threading.Thread):
         self.cb_exploit=exploit
 
 
-    def __set_combodata(self, files, mode):
+
+
+    """    def __set_combodata(self, files, mode):
         fd = open(files,'rb')
         data=fd.read()
         req=data.split('\n')
@@ -198,7 +192,8 @@ class GomozMenuBar(gtoolbar.GomozToolBar, threading.Thread):
             item=i.split('\r')
             mode.Append(item[0])
         fd.close
-      	return mode.GetCount()
+      	return mode.GetCount() """
+
 
     
     def OnOpen(self,event):
@@ -367,6 +362,8 @@ class GomozMenuBar(gtoolbar.GomozToolBar, threading.Thread):
       except Exception, msg:
           wx.MessageBox(str(msg),"Info")
 
+
+
     def OnDumpTxt(self, path):
       fd = open(path, 'a')
       while 1:
@@ -428,7 +425,7 @@ class GomozMenuBar(gtoolbar.GomozToolBar, threading.Thread):
 	path = dlg.GetPath()
 	if result==wx.ID_OK:
            self.cb_exploit.Clear()
-           self.exploit_count=self.__set_combodata(path, self.cb_exploit)
+           self.exploit_count=gtoolbar.GomozToolBar.SetCombodata(self, path, self.cb_exploit)
            if self.exploit_count > 1: 
              gstatusbar.GomozStatusBar.SetStatusText(self.frame.statusbar, str(self.exploit_count)+ " exploits loaded", 1)
            elif self.exploit_count == 1:
@@ -445,7 +442,7 @@ class GomozMenuBar(gtoolbar.GomozToolBar, threading.Thread):
 	path = dlg.GetPath()
 	if result==wx.ID_OK:
            self.cb_proxy.Clear()
-           self.proxy_count=self.__set_combodata(path, self.cb_proxy)
+           self.proxy_count=gtoolbar.GomozToolBar.SetCombodata(self, path, self.cb_proxy)
            if self.proxy_count > 1: 
               gstatusbar.GomozStatusBar.SetStatusText(self.frame.statusbar, str(self.proxy_count)+ " proxies loaded", 1)
            elif self.proxy_count==1:
@@ -461,7 +458,7 @@ class GomozMenuBar(gtoolbar.GomozToolBar, threading.Thread):
 	path = dlg.GetPath()
 	if result==wx.ID_OK:
            self.cb_targets.Clear()
-           self.target_count=self.__set_combodata(path, self.cb_targets)
+           self.target_count=gtoolbar.GomozToolBar.SetCombodata(self, path, self.cb_targets)
            if self.target_count > 1:
                gstatusbar.GomozStatusBar.SetStatusText(self.frame.statusbar, str(self.target_count)+ " targets loaded", 1)
            elif self.target_count==1:

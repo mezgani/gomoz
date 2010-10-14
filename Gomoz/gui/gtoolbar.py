@@ -8,7 +8,6 @@ import threading
  
 class GomozToolBar:
     def __init__(self, frame, panel, sources):
-
         self.frame = frame
         self.panel = panel
         self.lc_sources = sources
@@ -70,16 +69,10 @@ class GomozToolBar:
         #self.frame.toolbar.AddSimpleTool(807, wx.Bitmap('icons/stock_exit.png'), 'Exit', '')
 
       	self.frame.toolbar.AddSeparator()
-
-
-
-        
+     
         digicon="Gomoz/image/Helps.png"
         imag2 = wx.Image(digicon, wx.BITMAP_TYPE_PNG).ConvertToBitmap()
         self.frame.toolbar.AddSimpleTool(ID_HELP,imag2,"Help",'Help')
-
-    
-       
 
         self.frame.Bind(wx.EVT_TOOL, self.OnNewScan, id=ID_SCAN_NEW)
         self.frame.Bind(wx.EVT_TOOL, self.OnAdd, id=ID_SCAN_ADD)
@@ -107,15 +100,41 @@ class GomozToolBar:
         self.CloseConsole(10)
 
         
-
     def CloseConsole(self, request):
         self.frame.c_stack[request].Close()
         del self.frame.c_stack[request]
+
     def OnCloseAll(self, event):
         for i in self.frame.c_stack:
             self.frame.c_stack[i].Close()
         self.frame.c_stack={}
 
+
+
+        
+    def SetCombodata(self, files, mode):
+        fd = open(files,'rb')
+        data=fd.read()
+        req=data.split('\n')
+        
+        for i in req:
+            item=i.split('\r')
+            mode.Append(item[0])
+        fd.close
+      	return mode.GetCount()
+
+        
+    """def __set_combodata(self, files, mode):
+        fd = open(files,'rb')
+        data=fd.read()
+        req=data.split('\n')
+        
+        for i in req:
+            item=i.split('\r')
+            mode.Append(item[0])
+        fd.close
+      	return mode.GetCount()
+        """
             
     def OnNewScan(self,event=None):
         request="Do you really want to delete all?"
@@ -159,12 +178,19 @@ class GomozToolBar:
                if data is not None: 
                    fd=open("Gomoz/config/gomoz.cfg",'w')
                    fd.write('############Gomoz scan config file#############\n')
-                   fd.write('# Gomoz scanner v 1.0.1\n')
+                   fd.write('# Gomoz scanner setting\n')
                    fd.write('# Comment different directive for a new setting\n')
                    fd.write('###############################################\n')
                    for k,v in data.items():
                        fd.write(k+'='+v+'\n')
                    fd.close()
+                   f1="/home/orac/program/python/projets/gomoz/Gomoz/resources/target.txt"
+                   f2="/home/orac/program/python/projets/gomoz/Gomoz/resources/lists.txt"
+                  
+                   n1=self.SetCombodata(f1, self.frame.cb_targets)
+                   n2=self.SetCombodata(f2, self.frame.cb_exploit)
+                   self.frame.tc_url.SetValue('/')
+
             else:
                 exit(-1)
         else:
@@ -175,21 +201,28 @@ class GomozToolBar:
         frame = ShellFrame(parent=self)
         frame.Show()
 
+
+
     def OnAdd(self, event):
        
         #glistctrl.CheckListCtrl.SetImageServer(self.frame.checklister,'apache')
         num_items = self.frame.lc_sources.GetItemCount()
         counter=self.frame.GetID()
         timer=time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
-        if self.frame.cb_targets.GetValue()!="Enter target" and self.frame.cb_exploit.GetValue()!="Load exploits from file":    
+        if self.frame.cb_targets.GetValue is  not None\
+           or self.frame.cb_targets.GetValue !=""\
+           or self.frame.cb_exploit.GetValue is not None\
+           or self.frame.cb_exploit.GetValue !="":
+    
            self.frame.lc_sources.InsertStringItem(num_items, str(counter))
            self.frame.lc_sources.SetStringItem(num_items, 1, self.frame.cb_targets.GetValue())
-           self.frame.lc_sources.SetStringItem(num_items, 2, self.frame.cb_exploit.GetValue())
+           exploit=str(self.frame.tc_url.GetValue())+str(self.frame.cb_exploit.GetValue())
+           self.frame.lc_sources.SetStringItem(num_items, 2, exploit)
            self.frame.lc_sources.SetStringItem(num_items, 3, str(timer))
            self.frame.lc_sources.SetStringItem(num_items, 4, "unknown")
-           #self.tc1.Clear()
-           #self.tc2.Clear()
-
+        else:
+            wx.MessageBox("Warning, Please set correct targets and exploits values")
+            
     def OnPortScan(self, event):
        target=None 
        try:

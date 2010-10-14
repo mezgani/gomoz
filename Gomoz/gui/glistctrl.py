@@ -105,17 +105,18 @@ class CheckListCtrl(wx.lib.mixins.listctrl.ColumnSorterMixin, threading.Thread):
 
     def SetImageServer(self,server):
         pass
-##        if server=='apache':
-##            name="D:\projets\smash_web\Gomoz\image\\apache.png"
-##        elif server=='iis':
-##            name="D:\projets\smash_web\Gomoz\image\iis.png"
-##        else:
-##            name=="D:\projets\smash_web\Gomoz\image\others.png"
-##            
-##        bmp = wx.Bitmap(name, wx.BITMAP_TYPE_PNG)
-##        il_max = self.il.Add(bmp)
-##        self.frame.lc_sources.SetImageList(self.il, wx.IMAGE_LIST_SMALL)
-
+        """server='apache'
+        if server=='apache':
+            name="Gomoz/image/apache.png"
+        elif server=='iis':
+            name="Gomoz/image/iis.png"
+        else:
+            name=="Gomoz/image/others.png"
+            
+        bmp = wx.Bitmap(name, wx.BITMAP_TYPE_PNG)
+        il_max = self.il.Add(bmp)
+        self.frame.lc_sources.SetImageList(self.il, wx.IMAGE_LIST_SMALL)
+        """
 
     def SetStyle(self,style):
         if self.style is None or self.style == "":
@@ -375,6 +376,33 @@ class CheckListCtrl(wx.lib.mixins.listctrl.ColumnSorterMixin, threading.Thread):
         #self.frame.label.SetFont(wx.Font(8, wx.ROMAN, wx.NORMAL, wx.BOLD))
           
 
+        def GetDataT(self, path, mode):
+            try:
+                fs=open(path, 'r')
+                while 1:
+                    txt=fs.readline()
+                    if txt == '':
+                        break
+                    if txt[0]!='#': 
+                        if txt.find('PHPinc') != -1 and mode=='.php':
+                            return txt.split('=')[1].replace('\n','')
+                            
+                        if txt.find('TXTinc') != -1 and mode=='.txt':
+                            return txt.split('=')[1].replace('\n','')
+                            
+                        if txt.find('ASPinc') != -1 and mode=='.asp':
+                            return txt.split('=')[1].replace('\n','')
+                                  
+                        if txt.find('JSPinc') != -1 and mode=='.jsp':
+                            return txt.split('=')[1].replace('\n','')
+                                
+                        if txt.find('JPGinc') != -1 and mode=='.jpg':
+                            return txt.split('=')[1].replace('\n','')
+                                          
+                fs.close()
+            except:
+                pass
+
     def OnBrowse(self, event):
 
         import webbrowser
@@ -383,16 +411,20 @@ class CheckListCtrl(wx.lib.mixins.listctrl.ColumnSorterMixin, threading.Thread):
         browser=self.frame.lc_sources.GetItem(index, 1).GetText()        
         exploit=self.frame.lc_sources.GetItem(index, 2).GetText()
         directory=self.frame.tc_url.GetValue()
-            
+        print browser,directory,exploit  
   
         if browser is None or browser =="" or exploit is None or len(str(browser)+str(exploit))>255 :
            print  "Exception in URL length" 
            browser="localhost"
-        
-           if directory != '/':   
-               webbrowser.open("http://"+browser+'/'+directory+'/'+exploit)
-           else:
-               webbrowser.open("http://"+browser+'/'+exploit)
+          
+        if exploit.find('.php')>0:
+            rep=self.GetDataT('Gomoz/config/gomoz.cfg','.php')
+            replace('[path]', rep)
+
+        if directory != '/':   
+            webbrowser.open("http://"+browser+'/'+directory+'/'+exploit)
+        else:
+            webbrowser.open("http://"+browser+'/'+exploit)
 
         #self.frame.notebook_browser = wx.Panel(self.frame.notebook, -1, size=(200,200))
         #self.frame.notebook_browser.SetBackgroundColour('yellow')

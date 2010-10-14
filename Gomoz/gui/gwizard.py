@@ -9,7 +9,6 @@ class GomozIntroCgf(wx.wizard.WizardPageSimple):
     
 
 
-
 class FirstPage(GomozIntroCgf):
     def __init__(self, wizard, title):
         GomozIntroCgf.__init__(self, wizard, "Gomoz Config")
@@ -18,6 +17,8 @@ class FirstPage(GomozIntroCgf):
         self.error=''
         self.phpinc=''
         self.txtinc=''
+        self.aspinc=''
+        self.jspinc=''
         self.jpginc=''
         self.keyword=''
         self.scan=''
@@ -28,16 +29,22 @@ class FirstPage(GomozIntroCgf):
 
         self.label_3=wx.StaticText(self, -1, "include.TXT", pos=(10, 160))
         self.input_3=wx.TextCtrl(self, -1, self.txtinc, size=(180,20),pos=(80,160))
-
         
-        self.label_4=wx.StaticText(self, -1, "include.JPG", pos=(10, 220))
-        self.input_4=wx.TextCtrl(self, -1, self.jpginc, size=(180,20),pos=(80,220))
+        self.label_4=wx.StaticText(self, -1, "include.JPG", pos=(10, 190))
+        self.input_4=wx.TextCtrl(self, -1, self.jpginc, size=(180,20),pos=(80,190))
 
-        self.label_5=wx.StaticText(self, -1, "KeyWord", pos=(10, 250))
-        self.input_5=wx.TextCtrl(self, -1, self.keyword, size=(180,20),pos=(80,250))
+        self.label_5=wx.StaticText(self, -1, "include.ASP", pos=(10, 220))
+        self.input_5=wx.TextCtrl(self, -1, self.aspinc, size=(180,20),pos=(80,220))
+        
+        self.label_6=wx.StaticText(self, -1, "include.JSP", pos=(10, 250))
+        self.input_6=wx.TextCtrl(self, -1, self.jspinc, size=(180,20),pos=(80,250))
+
+        self.label_7=wx.StaticText(self, -1, "KeyWord", pos=(10, 280))
+        self.input_7=wx.TextCtrl(self, -1, self.keyword, size=(180,20),pos=(80,280))
 
 
-        for i in range(2,6):
+
+        for i in range(2,8):
             text="self.label_%s.SetForegroundColour(\"green\")" % i
             exec(text)
             bg="self.input_%s.SetBackgroundColour(wx.BLACK)" % i
@@ -83,6 +90,11 @@ class FirstPage(GomozIntroCgf):
         fgs.Add(self.input_4, 0, wx.EXPAND)
         fgs.Add(self.label_5, 0, wx.ALIGN_RIGHT)
         fgs.Add(self.input_5, 0, wx.EXPAND)
+        fgs.Add(self.label_6, 0, wx.ALIGN_RIGHT)
+        fgs.Add(self.input_6, 0, wx.EXPAND)
+        fgs.Add(self.label_7, 0, wx.ALIGN_RIGHT)
+        fgs.Add(self.input_7, 0, wx.EXPAND)
+
 
         fgs.AddGrowableCol(1)
         self.vbox.Add(fgs, 0, wx.EXPAND|wx.ALL, 5)
@@ -103,6 +115,12 @@ class FirstPage(GomozIntroCgf):
                    
                 if txt.find('TXTinc') != -1:
                     self.txtinc=txt.split('=')[1].replace('\n','')
+
+                if txt.find('ASPinc') != -1:
+                    self.aspinc=txt.split('=')[1].replace('\n','')
+                   
+                if txt.find('JSPinc') != -1:
+                    self.jspinc=txt.split('=')[1].replace('\n','')
 
                 if txt.find('JPGinc') != -1:
                     self.jpginc=txt.split('=')[1].replace('\n','')
@@ -172,15 +190,25 @@ class FirstPage(GomozIntroCgf):
         else:
            self.error="Please complete the TXTinc input ."
 
-        if self.input_5.GetValue().strip() != '':
-           self.data['KEYword']=self.input_5.GetValue()
-        else:
-           self.error="Please complete the keyword input ."
-
         if self.input_4.GetValue().strip() != '':
            self.data['JPGinc']=self.input_4.GetValue()
         else:
            self.error="Please complete the JPGinc input ."
+           
+        if self.input_5.GetValue().strip() != '':
+           self.data['ASPinc']=self.input_5.GetValue()
+        else:
+           self.error="Please complete the ASPinc input ."
+           
+        if self.input_6.GetValue().strip() != '':
+           self.data['JSPinc']=self.input_6.GetValue()
+        else:
+           self.error="Please complete the JSPinc input ."
+
+        if self.input_7.GetValue().strip() != '':
+            self.data['KEYword']=self.input_7.GetValue()
+        else:
+           self.error="Please complete the keyword input ."
            
             
         if self.error != '':
@@ -198,7 +226,7 @@ class LastPage(GomozIntroCgf):
         self.title=title
 
 
-        text1="securfox will not be held responsible for any loss, damages, accident,"
+        text1="Native LABS will not be held responsible for any loss, damages, accident,"
         text2="hardware failures, network failures or sabotage."
         self.label_1=wx.StaticText(self, -1, text1, pos=(10,130))
         self.label_2=wx.StaticText(self, -1, text2, pos=(10,160))
