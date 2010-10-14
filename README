@@ -5,7 +5,7 @@
 
 
 __software__= "gomoz"
-__author__ = "MEZGANI Ali handrix@gmail.com"
+__author__ = "MEZGANI Ali handrix [@] gmail [.] com"
 __version__ = "1.0.1"
 __cvsversion__ = "Revision: 1.0"
 __date__ = "Date: 2006"
