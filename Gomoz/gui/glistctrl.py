@@ -1,13 +1,14 @@
 import wx
-import data
+import data, re
 import sys, random
 import wx.lib.mixins.listctrl
 import Gomoz.headers as headers
 import gmenubar,gtoolbar, gbrowser, gstatusbar 
-import servinfo, Gomoz.injector
+import servinfo, Gomoz.injector as injector
 import console
 import threading
-        
+import webbrowser      
+
 class CheckListCtrl(wx.lib.mixins.listctrl.ColumnSorterMixin, threading.Thread):
     def __init__(self, frame, panel, ctrllist):
         threading.Thread.__init__(self)
@@ -376,7 +377,7 @@ class CheckListCtrl(wx.lib.mixins.listctrl.ColumnSorterMixin, threading.Thread):
         #self.frame.label.SetFont(wx.Font(8, wx.ROMAN, wx.NORMAL, wx.BOLD))
           
 
-        def GetDataT(self, path, mode):
+        def OnGetData(self, path, mode):
             try:
                 fs=open(path, 'r')
                 while 1:
@@ -405,8 +406,6 @@ class CheckListCtrl(wx.lib.mixins.listctrl.ColumnSorterMixin, threading.Thread):
 
     def OnBrowse(self, event):
 
-        import webbrowser
-        
         index=gmenubar.GomozMenuBar.GetSelection(self.frame.menu)
         browser=self.frame.lc_sources.GetItem(index, 1).GetText()        
         exploit=self.frame.lc_sources.GetItem(index, 2).GetText()
@@ -414,17 +413,19 @@ class CheckListCtrl(wx.lib.mixins.listctrl.ColumnSorterMixin, threading.Thread):
         print browser,directory,exploit  
   
         if browser is None or browser =="" or exploit is None or len(str(browser)+str(exploit))>255 :
-           print  "Exception in URL length" 
+           print  ("Exception in URL length") 
            browser="localhost"
-          
-        if exploit.find('.php')>0:
-            rep=self.GetDataT('Gomoz/config/gomoz.cfg','.php')
-            replace('[path]', rep)
-
-        if directory != '/':   
-            webbrowser.open("http://"+browser+'/'+directory+'/'+exploit)
-        else:
-            webbrowser.open("http://"+browser+'/'+exploit)
+        try:  
+            ext=re.findall("\.\w{3}", exploit)
+            if exploit.find(ext)>0:
+                rep=self.OnGetData('Gomoz/config/gomoz.cfg', ext)
+                replace('[path]', rep)
+        except Exception as e:
+            print (str(e))
+            pass
+            
+        webbrowser.open("http://"+browser+exploit)
+    
 
         #self.frame.notebook_browser = wx.Panel(self.frame.notebook, -1, size=(200,200))
         #self.frame.notebook_browser.SetBackgroundColour('yellow')

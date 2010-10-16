@@ -139,8 +139,6 @@ class InterGomoz(wx.Frame):
 
 
    
-
-
     def GetServerLogo(self, path):
         if path is None or path == "":
             path="Gomoz/image/smicon02.png"
@@ -194,7 +192,7 @@ class InterGomoz(wx.Frame):
             exploit=self.cb_exploit.GetItems()
             self.CheckScan(target, exploit, "mass")
         else:
-            wx.MessageBox("Please choose on scan option.","Info")
+            wx.MessageBox("Please choose one scan option.","Info")
             
 
     def InputScan(self, req, status):
@@ -226,7 +224,7 @@ class InterGomoz(wx.Frame):
             self.lc_sources.SetStringItem(num_items, 2, str(exploit))
             self.lc_sources.SetStringItem(num_items, 3, str(timer))
             self.lc_sources.SetStringItem(num_items, 4, status)
-       
+
             
        
 
@@ -280,17 +278,16 @@ class InterGomoz(wx.Frame):
         print self.cb_proxy.GetValue()
 
         slfinc=txtinc.split('.txt')[0]
-        r1=request.Request('timer', target, '', phpinc, exploit)
-        r2=request.Request('timer', target, '', phpinc+'?', exploit)
-        r3=request.Request('timer', target, '', txtinc, exploit)
-        r4=request.Request('timer', target, '', txtinc+'?', exploit)
-        r5=request.Request('timer', target, '', slfinc, exploit)
-        r6=request.Request('timer', target, '', slfinc+'?', exploit)
-        r7=request.Request('timer', target, '', jpginc, exploit)
-        r8=request.Request('timer', target, '', jpginc+'?', exploit)
+        r1=request.Request(0, target, "", "/", exploit, phpinc)
+        r2=request.Request(0, target, "", "/", exploit, phpinc+'?')
+        """r3=request.Request(0, target, "", "/", exploit, txtinc)
+        r4=request.Request(0, target, "", "/", exploit, txtinc)
+        r5=request.Request(0, target, "", "/", exploit, slfinc)
+        r6=request.Request(0, target, "", "/", exploit, slfinc+'?')
+        r7=request.Request(0, target, "", "/", exploit, jpginc)
+        r8=request.Request(0, target, "", "/", exploit, jpginc+'?')"""
 
-
-        for i in range(1,9):
+        for i in range(1,3):
             req1="r%s.set%s()" % (i,mode)
             req2="r%s.start()" % i
             exec(req1)
@@ -300,57 +297,63 @@ class InterGomoz(wx.Frame):
         start=time.time()
 
         end=time.time()    
-        tempo=r1.stack + r2.stack + r3.stack + r4.stack + r5.stack + r6.stack + r7.stack + r8.stack
-        exploit=r1.GetExploit()
-        target=r1.GetTarget()
-
+        """tempo  = r1.stack + r2.stack + r3.stack + r4.stack 
+        tempo += r5.stack + r6.stack + r7.stack + r8.stack"""
+        
+        exploit = r1.exploit
+        target  = r1.target
+        r1.scan()
         #print end-start
         
         fd=open('Gomoz/log/gomoz.log','a')          
         try:
             k = 0
-            for url in tempo:
+            for url in r1.stack:
                 owned=False
                 snapshot=time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
                 print "[+] "+url
                 data=r1.wget(url)
-
+                print data
                 #data='c99shell'
                 if data is None:
-                    pass
-                data=data.replace('\r\n','\n')
-                if data.find(keyword) == -1:
                     status='No vulnerable'
                     fd.write("["+snapshot+"] "+url+" [No vulnerable]"+"\n")
-
+                    pass
+                
                 else:
-                    status='Vulnerable'
-                    owned=True
-                    fd.write("["+snapshot+"] "+url+" [Vulnerable]"+"\n")
-                    
+                     #data=data.replace('\r\n','\n')
+                     if data.find(keyword) == -1:
+                         status='No vulnerable'
+                         fd.write("["+snapshot+"] "+url+" [No vulnerable]"+"\n")
+
+                     else:
+                         status='Vulnerable'
+                         owned=True
+                         fd.write("["+snapshot+"] "+url+" [Vulnerable]"+"\n")
+                         
                 if owned==True:
-                   status='Vulnerable'
+                    status='Vulnerable'
                 
                 a, b=len(target), len(exploit)
                 try:
-                   if (k*a*b % ((a^k) * (b^k)))==0:
-                
-                      for i in range(len(target)):
-                         for j in range(len(exploit)):
-                           num_items = self.lc_sources.GetItemCount() 
-                           req=self.GetID()
-                           timer=time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
-                           self.lc_sources.InsertStringItem(num_items, str(req))
-                           self.lc_sources.SetStringItem(num_items, 1, str(target[i]))
-                           self.lc_sources.SetStringItem(num_items, 2, str(exploit[j]))
-                           self.lc_sources.SetStringItem(num_items, 3, str(timer))
-                           self.lc_sources.SetStringItem(num_items, 4, status)
-                           self.statusbar.SetStatusText(str(exploit[j]), 0)
-                   self.statusbar.SetStatusText(str("Scanning ..."), 1)
-                   k += 1
+                    if (k*a*b % ((a^k) * (b^k)))==0:
+                        
+                        for i in range(len(target)):
+                            for j in range(len(exploit)):
+                                num_items = self.lc_sources.GetItemCount() 
+                                req=self.GetID()
+                                timer=time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
+                                self.lc_sources.InsertStringItem(num_items, str(req))
+                                self.lc_sources.SetStringItem(num_items, 1, str(target[i]))
+                                self.lc_sources.SetStringItem(num_items, 2, str(exploit[j]))
+                                self.lc_sources.SetStringItem(num_items, 3, str(timer))
+                                self.lc_sources.SetStringItem(num_items, 4, status)
+                                self.statusbar.SetStatusText(str(exploit[j]), 0)
+                                self.statusbar.SetStatusText(str("Scanning ..."), 1)
+                                k += 1
                 except Exception, e:
-                     pass
-                    
+                    pass
+                
 ##                if data is None or data =='':
 ##                    status='no response'
 ##            if owned==True:
