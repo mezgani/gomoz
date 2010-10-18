@@ -1,5 +1,5 @@
 import wx
-import data, re
+import re
 import sys, random
 import wx.lib.mixins.listctrl
 import Gomoz.headers as headers
@@ -17,7 +17,7 @@ class CheckListCtrl(wx.lib.mixins.listctrl.ColumnSorterMixin, threading.Thread):
         self.lc_sources = ctrllist
         self.editable = False
         self.menulogic=False 
-        self.il = None
+        #self.il = None
         self.__initialize__()
         self.itemDataMap = {}
 
@@ -25,7 +25,7 @@ class CheckListCtrl(wx.lib.mixins.listctrl.ColumnSorterMixin, threading.Thread):
         if self.editable:
            otherflags |= wx.LC_EDIT_LABELS
                 
-        self.il = wx.ImageList(16,16, True)
+        #self.il = wx.ImageList(16,16, True)
 
 ##        a={"sm_up":"GO_UP","sm_dn":"GO_DOWN","w_idx":"WARNING","e_idx":"ERROR","i_idx":"QUESTION"}
 ##        for k,v in a.items():
@@ -57,27 +57,23 @@ class CheckListCtrl(wx.lib.mixins.listctrl.ColumnSorterMixin, threading.Thread):
         wx.lib.mixins.listctrl.ColumnSorterMixin.__init__(self,5)
         self.frame.lc_sources.SetBackgroundColour('white')
         self.frame.lc_sources.SetForegroundColour('black')
-        self.frame.lc_sources.AssignImageList(self.il, wx.IMAGE_LIST_SMALL)
+        ##self.frame.lc_sources.AssignImageList(self.il, wx.IMAGE_LIST_SMALL)
+        
         columns = ["Request ID", "Target", "Exploit", "Date","Status"]
         for col, text in enumerate(columns):
             self.frame.lc_sources.InsertColumn(col, text)
 
         
+        """ Insert data from data file
         rows=data.row
 
         for item in rows:
             index = self.frame.lc_sources.InsertStringItem(sys.maxint, item[0])
             for col, text in enumerate(item[1:]):
                 pass
-                #self.frame.lc_sources.SetStringItem(index, col+1, text)
-
-
-             # give each item a random image
-##            img = random.randint(0, il_max)
-##            self.frame.lc_sources.SetItemImage(index, img, img)
-##            self.frame.lc_sources.SetItemData(index, index)
             self.itemDataMap[index] = item
-       
+       """
+
         self.frame.lc_sources.SetColumnWidth(0, 80)
         self.frame.lc_sources.SetColumnWidth(1, 170)
         self.frame.lc_sources.SetColumnWidth(2, 320)
@@ -89,6 +85,7 @@ class CheckListCtrl(wx.lib.mixins.listctrl.ColumnSorterMixin, threading.Thread):
         #self.lc_sources.SetColumnWidth(4, wx.LIST_AUTOSIZE_USEHEADER)
         self.frame.Bind(wx.EVT_LIST_ITEM_SELECTED, self.OnShowMenu, self.lc_sources)
         self.frame.Bind(wx.EVT_LIST_ITEM_DESELECTED, self.OnItemDeselected, self.lc_sources)
+        #self.frame.Bind(wx.EVT_LIST_COL_CLICK, self.OnColClick, self.lc_sources)
         # bind some interesting events
         #self.Bind(wx.EVT_LIST_ITEM_SELECTED, self.OnItemSelected, self.lc_sources)
         #self.Bind(wx.EVT_LIST_ITEM_DESELECTED, self.OnItemDeselected, self.lc_sources)
@@ -119,6 +116,9 @@ class CheckListCtrl(wx.lib.mixins.listctrl.ColumnSorterMixin, threading.Thread):
         self.frame.lc_sources.SetImageList(self.il, wx.IMAGE_LIST_SMALL)
         """
 
+   
+   
+        
     def SetStyle(self,style):
         if self.style is None or self.style == "":
             self.style=wx.LC_REPORT|wx.SUNKEN_BORDER
@@ -359,7 +359,7 @@ class CheckListCtrl(wx.lib.mixins.listctrl.ColumnSorterMixin, threading.Thread):
         #self.frame.c_stack[request].Close()
 
         test=console.GomozConsole(self.frame.notebook_console, -1, '%')
-
+        """ 
         url='http://'+str(consoles)+'/'
         print url
         print exploit
@@ -368,6 +368,8 @@ class CheckListCtrl(wx.lib.mixins.listctrl.ColumnSorterMixin, threading.Thread):
             test.SetParams(url, str(exploit), '')
         else:
             test.SetParams(url, str(include), '')
+        """
+
         #test.SetUrl(url='http://iberoriente.net/inj.php?md=')
         #app.MainLoop()
         

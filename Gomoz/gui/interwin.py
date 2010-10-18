@@ -8,7 +8,7 @@ import  Gomoz.request as request
 from wx.py.shell import ShellFrame
 from ids import *
 
-
+import wx.aui, wx.lib.scrolledpanel
 
 
 class InterGomoz(wx.Frame):
@@ -23,41 +23,28 @@ class InterGomoz(wx.Frame):
 
         self.c_stack={}
         self.r_stack=[0]
+
+        # The notebook              
+        self.notebook = wx.aui.AuiNotebook(self)
+        self.notebook.SetBackgroundColour('green')
         
-        self.notebook = wx.Notebook(self, -1, style=0)
-        self.notebook.SetBackgroundColour('white')
-        
-        #self.notebook_pane_console = wx.Panel(self.notebook, -1)
+        self.notebook_panel_console = wx.Panel(self.notebook, -1)
         self.notebook_panel_scan = wx.Panel(self.notebook, -1)
-          
+        
+        # Main staticbox 
         self.sizer_top_staticbox = wx.StaticBox(self, -1, _("Main"))
         self.sizer_top_staticbox.SetForegroundColour('green')
 
-        self.menulogic=False
+        #self.menulogic=False
         self.lc_sources=None
-        self.editable = False
+        #self.editable = False
+
         
-
         self.SetToolBar(self.lc_sources)
-
-        #self.tc_console = wx.TextCtrl(self.notebook_pane_console, -1, "", style=wx.TE_MULTILINE)
-        #self.tc_console.SetBackgroundColour(wx.BLACK)
-        #self.tc_console.SetForegroundColour(wx.WHITE)       
-        #self.tc_console.WriteText('[127.0.0.1]$ ');
-
-        #self.shadesubmenus = False
-        #self.bShadeSubMenus = self.shadesubmenus
-        #self.bShadeSubMenus = False
-      
         self.__initialize_interframe()
         self.SetGomozMenuBar(self.lc_sources)
-        #self.hwnd = self.GetHandle()
-        #menubrush.ChangeMenuBarColor(self)  
         
         
-        
-
-
     def _checklist(self):
         self.__initialize_checklist()
 
@@ -83,39 +70,23 @@ class InterGomoz(wx.Frame):
         self.tool.__initialize__()
         
   
+    """
     def OnAdd(self, event):
         num_items = self.lc_sources.GetItemCount()
         self.lc.InsertStringItem(num_items, self.tc1.GetValue())
         self.lc.SetStringItem(num_items, 1, self.tc2.GetValue())
         self.tc1.Clear()
         self.tc2.Clear()
-
+        """
         
     def __init_statusbar(self):
         """Creates a status bar for main frame"""
         self.statusbar=gstatusbar.GomozStatusBar(self)
-        self.statusbar.SetForegroundColour(wx.RED)
-        self.statusbar.SetBackgroundColour(wx.BLACK)
-        self.SetStatusText("4",1)        
         self.SetStatusBar(self.statusbar)
      
 
-    def OnShowMenuConsole(self, event):
-
-        self.cslmenu = wx.Menu()
-        self.renameconsolemenu = self.cslmenu.Append(-1, "Rename")
-        self.consolemenu = self.cslmenu.Append(-1, "Refresh")
-        self.cslmenu.AppendSeparator()
-        self.deleteconsolemenu = self.cslmenu.Append(-1, "Delete")
-        self.Bind(wx.EVT_MENU, self.OnPopupItemSelected, self.cslmenu)
-        self.Bind(wx.EVT_MENU, self.OnPopupItemSelected, self.renameconsolemenu)
-        self.Bind(wx.EVT_MENU, self.OnRemove, self.deleteconsolemenu)
-        #self.notebook_console.Bind(wx.EVT_CONTEXT_MENU, self.OnShowPopup)
-
-
-
-
     def OnGetRows(self):
+        """return index of rows self.lc_sources.GetItemCount()"""
         index = self.lc_sources.GetFirstSelected()
         if index == -1:
             return
@@ -125,6 +96,7 @@ class InterGomoz(wx.Frame):
             index = self.lc_sources.GetNextSelected(index)
 
     def OnGetAllRows(self):
+        """return number of rows self.lc_sources.GetItemCount()"""
         index = self.lc_sources.GetFirstSelected()
         if index == -1:
             return
@@ -134,17 +106,13 @@ class InterGomoz(wx.Frame):
             data=item.GetText()
             tab.append(data)
             index = self.lc_sources.GetNextSelected(index)
-    
-        # return number of rows self.lc_sources.GetItemCount()
-
-
-   
+       
     def GetServerLogo(self, path):
         if path is None or path == "":
             path="Gomoz/image/smicon02.png"
 
         logo = wx.ImageList(16,16, True)
-        bmp = wx.Bitmap(path, wx.BITMAP_TYPE_PNG)
+        bmp  = wx.Bitmap(path, wx.BITMAP_TYPE_PNG)
         self.logo_max = logo.Add(bmp)
         self.lc_sources.AssignImageList(logo, wx.IMAGE_LIST_SMALL)
         
@@ -196,8 +164,6 @@ class InterGomoz(wx.Frame):
             
 
     def InputScan(self, req, status):
-        #import glistctrl
-        #glistctrl.CheckListCtrl.SetImageServer(self.checklister,'apache')
         defaultx=""
         default =""
         if self.cb_exploit.GetValue() != default or self.cb_targets.GetValue() !=default :
@@ -226,8 +192,6 @@ class InterGomoz(wx.Frame):
             self.lc_sources.SetStringItem(num_items, 4, status)
 
             
-       
-
     def GetID(self):
         self.counter=0
         self.r_stack.sort()
@@ -239,7 +203,6 @@ class InterGomoz(wx.Frame):
             counter= 1
         self.r_stack.append(counter)
         return counter
-
 
 
     def CheckScan(self, target, exploit, mode):
@@ -280,12 +243,16 @@ class InterGomoz(wx.Frame):
         slfinc=txtinc.split('.txt')[0]
         r1=request.Request(0, target, "", "/", exploit, phpinc)
         r2=request.Request(0, target, "", "/", exploit, phpinc+'?')
-        """r3=request.Request(0, target, "", "/", exploit, txtinc)
+        r3=request.Request(0, target, "", "/", exploit, txtinc)
         r4=request.Request(0, target, "", "/", exploit, txtinc)
         r5=request.Request(0, target, "", "/", exploit, slfinc)
         r6=request.Request(0, target, "", "/", exploit, slfinc+'?')
         r7=request.Request(0, target, "", "/", exploit, jpginc)
-        r8=request.Request(0, target, "", "/", exploit, jpginc+'?')"""
+        r8=request.Request(0, target, "", "/", exploit, jpginc+'?')
+        r9=request.Request(0, target, "", "/", exploit, aspinc)
+        r10=request.Request(0, target, "", "/", exploit, aspinc+'?')
+        r11=request.Request(0, target, "", "/", exploit, jspinc)
+        r12=request.Request(0, target, "", "/", exploit, jspinc+'?')
 
         for i in range(1,3):
             req1="r%s.set%s()" % (i,mode)
@@ -296,18 +263,20 @@ class InterGomoz(wx.Frame):
         import time
         start=time.time()
 
-        end=time.time()    
+       
         """tempo  = r1.stack + r2.stack + r3.stack + r4.stack 
         tempo += r5.stack + r6.stack + r7.stack + r8.stack"""
         
         exploit = r1.exploit
         target  = r1.target
+        path    = r1.directory
         r1.scan()
-        #print end-start
+        
         
         fd=open('Gomoz/log/gomoz.log','a')          
         try:
             k = 0
+            v = 0
             for url in r1.stack:
                 owned=False
                 snapshot=time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
@@ -333,7 +302,7 @@ class InterGomoz(wx.Frame):
                          
                 if owned==True:
                     status='Vulnerable'
-                
+                    v =+ 1
                 a, b=len(target), len(exploit)
                 try:
                     if (k*a*b % ((a^k) * (b^k)))==0:
@@ -342,6 +311,7 @@ class InterGomoz(wx.Frame):
                             for j in range(len(exploit)):
                                 num_items = self.lc_sources.GetItemCount() 
                                 req=self.GetID()
+                                exploit[j] = path + exploit[j]
                                 timer=time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
                                 self.lc_sources.InsertStringItem(num_items, str(req))
                                 self.lc_sources.SetStringItem(num_items, 1, str(target[i]))
@@ -349,10 +319,15 @@ class InterGomoz(wx.Frame):
                                 self.lc_sources.SetStringItem(num_items, 3, str(timer))
                                 self.lc_sources.SetStringItem(num_items, 4, status)
                                 self.statusbar.SetStatusText(str(exploit[j]), 0)
-                                self.statusbar.SetStatusText(str("Scanning ..."), 1)
+                                end=time.time()
+                                s=("%.3f" % float(end-start))
+                                self.statusbar.WriteStatus(str(s)+" sec", 3)
+                                self.statusbar.WriteStatus(str("Scanning ..."), 1)
                                 k += 1
+                            exploit[j]=exploit[j][len(path):].replace(path, '')
+                            
                 except Exception, e:
-                    pass
+                    print(str(e))
                 
 ##                if data is None or data =='':
 ##                    status='no response'
@@ -362,14 +337,19 @@ class InterGomoz(wx.Frame):
 ##            counter=self.GetID()        
 ##            self.InputScan(counter, status)
                 
-            t=len(tempo)
-            self.statusbar.SetStatusText(str("Scan done"), 0)
-            msg=str(t/8)+" url scanned,"+ " 1 url "+status
-            self.statusbar.SetStatusText(str(msg), 1)
+            t=len(exploit)*len(target)
+            
+            self.statusbar.WriteStatus(str("Scan finished"), 0)
+            msg=str(t)+" URL scanned"
+            self.statusbar.WriteStatus(str(msg), 1)
+
+            
+            self.statusbar.WriteStatus(str(v)+" URL vulnerable(s)",2)
+           
         except AttributeError, e :
-            print e
+            print (str(e))
         except Exception, ex :
-            pass
+            print (str(ex))
 
 
     def __set_properties(self):
@@ -387,19 +367,12 @@ class InterGomoz(wx.Frame):
         self.timer = wx.PyTimer(self.Notify)
         self.timer.Start(1000)
         self.Notify()
-##
-##        self.label_timer=wx.StaticText(self, -1, '00:00:00:00')
-##        self.label_timer.SetForegroundColour('yellow')
-
 
         
         self.label_2 = wx.StaticText(self, -1, ("Hosts:"))
-        #self.label_2.SetFont(wx.Font(8, wx.ROMAN, wx.NORMAL, wx.BOLD))
         self.label_2.SetForegroundColour('white')       
-
+        self.cb_targets = wx.ComboBox(self, -1, "", choices=[""], style=wx.CB_DROPDOWN|wx.CB_SORT)
         
-        self.cb_targets = wx.ComboBox(self, -1, "Enter hosts", choices=[""], style=wx.CB_DROPDOWN|wx.CB_SORT)
-        #self.cb_targets.SetSelection(1)
         self.cb_targets.SetBackgroundColour(wx.BLACK)
         self.cb_targets.SetForegroundColour(wx.GREEN)
         self.cb_targets.SetValue("")
@@ -408,10 +381,10 @@ class InterGomoz(wx.Frame):
         #self.label_4.SetFont(wx.Font(8, wx.ROMAN, wx.NORMAL, wx.BOLD))
         self.label_4.SetForegroundColour('white')
         
-        self.cb_input = wx.CheckBox(self, -1, ("input"))
-        self.cb_single = wx.CheckBox(self, -1, ("single"))
-        self.cb_mass = wx.CheckBox(self, -1, ("mass"))
-        self.cb_glob = wx.CheckBox(self, -1, ("global"))
+        self.cb_input = wx.CheckBox(self, -1, ("Input"))
+        self.cb_single = wx.CheckBox(self, -1, ("Single"))
+        self.cb_mass = wx.CheckBox(self, -1, ("Mass"))
+        self.cb_glob = wx.CheckBox(self, -1, ("Global"))
         
         self.cb_input.SetForegroundColour('red')
         self.cb_input.SetBackgroundColour('black')
@@ -427,7 +400,7 @@ class InterGomoz(wx.Frame):
         self.cb_glob.SetValue(0)
         self.cb_mass.SetValue(0)
 
-        self.label_5 = wx.StaticText(self, -1, ("Directory:"))
+        self.label_5 = wx.StaticText(self, -1, ("Path    :"))
         #self.label_5.SetFont(wx.Font(8, wx.SWISS, wx.NORMAL, wx.BOLD))
         self.label_5.SetForegroundColour('white')
 
@@ -437,7 +410,7 @@ class InterGomoz(wx.Frame):
         self.tc_url.SetForegroundColour(wx.BLACK)
 
     
-        self.label_6 = wx.StaticText(self, -1, ("Proxy:"))
+        self.label_6 = wx.StaticText(self, -1, ("Proxy   :"))
         #self.label_6.SetFont(wx.Font(8, wx.SWISS, wx.NORMAL, wx.BOLD))
         self.label_6.SetForegroundColour('white')
         
@@ -445,9 +418,9 @@ class InterGomoz(wx.Frame):
         #self.cb_proxy.SetSelection(1)
         self.cb_proxy.SetBackgroundColour(wx.BLACK)
         self.cb_proxy.SetForegroundColour(wx.GREEN)
-        self.cb_proxy.SetValue("proxy:port")
+        #self.cb_proxy.SetValue("proxy:port")
     
-        self.label_7 = wx.StaticText(self, -1, ("Exploit:"))
+        self.label_7 = wx.StaticText(self, -1, ("Exploit :"))
         #self.label_7.SetFont(wx.Font(8, wx.SWISS, wx.NORMAL, wx.BOLD))
         self.label_7.SetForegroundColour('white')
             
@@ -456,10 +429,7 @@ class InterGomoz(wx.Frame):
         self.cb_exploit.SetBackgroundColour(wx.BLACK)
         self.cb_exploit.SetForegroundColour(wx.GREEN)
         self.cb_exploit.SetValue("")  
-       
-         
-        
-
+    
         # in case we are recreating the list tickle the frame a bit so
         # it will redo the layout
         self.SendSizeEvent()
@@ -472,9 +442,9 @@ class InterGomoz(wx.Frame):
     def Notify(self):
         t = time.localtime(time.time())
         st = time.strftime("%I:%M:%S %p", t)
-        # --- could also use self.sb.SetStatusText
+        # --- could also use self.sb.WriteStatus
         self.label_timer.SetLabel(st)
-        #self.statusbar.SetStatusText(st)
+        #self.statusbar.WriteStatus(st)
 
     
 
@@ -519,17 +489,7 @@ class InterGomoz(wx.Frame):
         self.notebook_panel_scan.SetSizer(sizer_3)
         sizer_3.Fit(self.notebook_panel_scan)
         sizer_3.SetSizeHints(self.notebook_panel_scan)
-        #sizer_4.Add(self.tc_console, 1, wx.ALL|wx.EXPAND|wx.ADJUST_MINSIZE, 3)
-        #self.notebook_pane_console.SetAutoLayout(True)
-        #self.notebook_pane_console.SetSizer(sizer_4)
-        #self.notebook_pane_console.SetBackgroundColour('black')
-
-        #sizer_4.Fit(self.notebook_pane_console)
-        #sizer_4.SetSizeHints(self.notebook_pane_console)
-
-        
         self.notebook.AddPage(self.notebook_panel_scan, _("Scans"))
-        #self.notebook.AddPage(self.notebook_pane_console, _("Console"))
         sizer_base.Add(self.notebook, 1, wx.ALL|wx.EXPAND, 3)
         self.SetAutoLayout(True)
         self.SetSizer(sizer_base)
@@ -544,14 +504,13 @@ class InterGomoz(wx.Frame):
     def OnConsole(self, event):
         console=self.OnGetRows()
         if console is None or console =="":
-            console="NoNamed"
+            console="Unnamed"
         self.notebook_console = wx.Panel(self.notebook, -1)
         self.notebook_console.SetAutoLayout(True)
         self.notebook_console.SetBackgroundColour('wx.BLACK')
         self.notebook.AddPage(self.notebook_console, (console))
         self.notebook_console.SetForegroundColour(wx.WHITE)
-        #self.notebook_console.Bind(wx.EVT_CONTEXT_MENU, self.OnShowMenuConsole)        
-
+        
         #the name of tab, has to be checked
         self.label=wx.StaticText(self.notebook_console, -1, ("["+console+"]$ _"))
         self.label.SetFont(wx.Font(8, wx.ROMAN, wx.NORMAL, wx.BOLD))
@@ -560,7 +519,6 @@ class InterGomoz(wx.Frame):
 
     def OnChoice(self, event=None):
         data = []
-	
 	self.target  = self.cb_targets.GetStringSelection()
 	self.url  = self.tc_url.GetStringSelection()
 	self.proxy = self.cb_proxy.GetStringSelection()
@@ -576,3 +534,5 @@ class InterGomoz(wx.Frame):
 		return -1
         
     
+    
+

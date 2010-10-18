@@ -459,6 +459,8 @@ class GomozMenuBar(gtoolbar.GomozToolBar, threading.Thread):
 	if result==wx.ID_OK:
            self.cb_targets.Clear()
            self.target_count=gtoolbar.GomozToolBar.SetCombodata(self, path, self.cb_targets)
+           #d=gtoolbar.GomozToolBar.GetCombodata(self, path)
+           #self.cb_targets.SetValue(str(d[0]))
            if self.target_count > 1:
                gstatusbar.GomozStatusBar.SetStatusText(self.frame.statusbar, str(self.target_count)+ " targets loaded", 1)
            elif self.target_count==1:

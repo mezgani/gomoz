@@ -63,7 +63,7 @@ class GomozToolBar:
 
         image="Gomoz/image/eclipse.png"
         imag2 = wx.Image(image, wx.BITMAP_TYPE_PNG).ConvertToBitmap()
-	self.frame.toolbar.AddSimpleTool(ID_CLOSE_ALL,imag2,"Close All consoles",'Close All consoles')
+	self.frame.toolbar.AddSimpleTool(ID_CLOSE_ALL,imag2,"Whois request",'whois request')
 
         #self.frame.toolbar.AddSimpleTool(ID_CLOSE_ALL,images.getCloseAllBitmap(),"Close All consoles",'Close All consoles')
         #self.frame.toolbar.AddSimpleTool(807, wx.Bitmap('icons/stock_exit.png'), 'Exit', '')
@@ -124,17 +124,12 @@ class GomozToolBar:
       	return mode.GetCount()
 
         
-    """def __set_combodata(self, files, mode):
+    def GetCombodata(self, files):
+        mode=[]
         fd = open(files,'rb')
-        data=fd.read()
-        req=data.split('\n')
+        mode=fd.readlines()
+        return mode
         
-        for i in req:
-            item=i.split('\r')
-            mode.Append(item[0])
-        fd.close
-      	return mode.GetCount()
-        """
             
     def OnNewScan(self,event=None):
         request="Do you really want to delete all?"
@@ -184,11 +179,6 @@ class GomozToolBar:
                    for k,v in data.items():
                        fd.write(k+'='+v+'\n')
                    fd.close()
-                   f1="/home/orac/program/python/projets/gomoz/Gomoz/resources/target.txt"
-                   f2="/home/orac/program/python/projets/gomoz/Gomoz/resources/lists.txt"
-                  
-                   n1=self.SetCombodata(f1, self.frame.cb_targets)
-                   n2=self.SetCombodata(f2, self.frame.cb_exploit)
                    self.frame.tc_url.SetValue('/')
 
             else:
@@ -196,6 +186,7 @@ class GomozToolBar:
         else:
             return
         wizard.Destroy()
+                  
           
     def OnShell(self, event):
         frame = ShellFrame(parent=self)

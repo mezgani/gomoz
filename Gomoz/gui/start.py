@@ -10,8 +10,8 @@ class SplashApp(wx.App):
             req2="self.spl%s=wx.SplashScreen(bmp, wx.SPLASH_CENTRE_ON_SCREEN | wx.SPLASH_TIMEOUT,4000, None, -1)" % i
             exec(req1)
             exec(req2)
-            #time.sleep(0.2)
-            """
+            time.sleep(0.2)
+           """ 
             
             #this="self.gauge%s = wx.Gauge(self.spl%s, -1, 100, (0, 264), (400, 25))" % (i,i)
             #exec(this)
