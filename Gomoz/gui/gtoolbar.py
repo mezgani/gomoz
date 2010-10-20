@@ -85,7 +85,7 @@ class GomozToolBar:
         self.frame.Bind(wx.EVT_TOOL, self.OnHelp, id=ID_HELP)
         
         self.frame.toolbar.Realize()
-        self.frame.toolbar.SetBackgroundColour('black')
+        self.frame.toolbar.SetBackgroundColour('white')
         #self.frame.toolbar.SetForegroundColour('white')
 
 
@@ -156,12 +156,12 @@ class GomozToolBar:
             
         wizard = wx.wizard.Wizard(None, -1, "Gomoz setup scan")
         page1 = gwizard.FirstPage(wizard,"Gomoz setup scan")
-        page1.SetBackgroundColour('black')
-        page1.SetForegroundColour('green')
+        #page1.SetBackgroundColour('black')
+        #page1.SetForegroundColour('green')
    
         page2 = gwizard.LastPage(wizard,"Gomoz and laws")
-        page2.SetBackgroundColour('white')
-        page2.SetForegroundColour('blue')
+        #page2.SetBackgroundColour('white')
+        #page2.SetForegroundColour('blue')
     
         wx.wizard.WizardPageSimple_Chain(page1, page2)
        

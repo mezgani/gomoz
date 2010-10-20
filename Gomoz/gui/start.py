@@ -35,7 +35,7 @@ class SplashApp(wx.App):
         frame.SetSize((900,550))
         frame.SetPosition((100,100))
         frame.Show(True)
-        frame.SetBackgroundColour('black')
+        #frame.SetBackgroundColour('black')
         self.SetTopWindow(frame)
         frame.Show()
         return True

@@ -21,16 +21,16 @@ class PortScanFrame(wx.Frame,threading.Thread):
     
           
        
-        self.panel.SetBackgroundColour('black')
+        #self.panel.SetBackgroundColour('black')
         self.label  = wx.StaticText(self.panel, -1, "Target(s):", pos=(50,30))
-        self.label.SetForegroundColour('yellow')
+        #self.label.SetForegroundColour('yellow')
         self.input  = wx.TextCtrl(self.panel, -1, "127.0.0.1", size=(238,20),pos=(110,30))
 
         self.label  = wx.StaticText(self.panel, -1, "start port :", pos=(50,55))
-        self.label.SetForegroundColour('yellow')
+        #self.label.SetForegroundColour('yellow')
         
         self.label  = wx.StaticText(self.panel, -1, "end port :", pos=(230,55))
-        self.label.SetForegroundColour('yellow')
+        #self.label.SetForegroundColour('yellow')
         
         self.startport = wx.SpinCtrl(self.panel, -1, "", (287, 55), (60, -1))
         self.startport.SetRange(1,65535)
@@ -49,14 +49,14 @@ class PortScanFrame(wx.Frame,threading.Thread):
 
         self.button1 = wx.Button(self.panel, id=-1, pos=(242, 250))
         self.button1.SetLabel('Start')
-        self.button1.SetBackgroundColour('black')
-        self.button1.SetForegroundColour('green')
+        #self.button1.SetBackgroundColour('black')
+        #self.button1.SetForegroundColour('green')
         self.button1.Bind(wx.EVT_BUTTON, self.OnButton)
 
         self.button2 = wx.Button(self.panel, id=-1, pos=(100, 250))
         self.button2.SetLabel('Clear')
-        self.button2.SetBackgroundColour('black')
-        self.button2.SetForegroundColour('green')
+        #self.button2.SetBackgroundColour('black')
+        #self.button2.SetForegroundColour('green')
         self.button2.Bind(wx.EVT_BUTTON, self.OnClear)
 
         self.__initialize__()
@@ -167,7 +167,7 @@ class PortScanFrame(wx.Frame,threading.Thread):
         else:    
             print host +" scan from "+ str(start) + " to "+ str(end) + "\n"
         chrono = time.time()
-        result=scan.scan(host, start, end)
+        result=scan.scan(host, start, end, 300)
         ports = [key for key in result.keys()]
         ports.sort()
         ports = [str(key)+" "+str("open") for key in ports]

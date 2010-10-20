@@ -3,7 +3,8 @@
 import wx, glob
 import time
 import gmenubar, glistctrl, gtoolbar, gstatusbar
-import  Gomoz.request as request
+import Gomoz.request as request
+import Gomoz.scan 
 
 from wx.py.shell import ShellFrame
 from ids import *
@@ -33,7 +34,7 @@ class InterGomoz(wx.Frame):
         
         # Main staticbox 
         self.sizer_top_staticbox = wx.StaticBox(self, -1, _("Main"))
-        self.sizer_top_staticbox.SetForegroundColour('green')
+        self.sizer_top_staticbox.SetForegroundColour('blue')
 
         #self.menulogic=False
         self.lc_sources=None
@@ -159,9 +160,10 @@ class InterGomoz(wx.Frame):
             target=self.cb_targets.GetItems()
             exploit=self.cb_exploit.GetItems()
             self.CheckScan(target, exploit, "mass")
+            
         else:
             wx.MessageBox("Please choose one scan option.","Info")
-            
+        print target,exploit
 
     def InputScan(self, req, status):
         defaultx=""
@@ -206,12 +208,12 @@ class InterGomoz(wx.Frame):
 
 
     def CheckScan(self, target, exploit, mode):
-        for i in range(len(target)):
+        """for i in range(len(target)):
             target[i]=target[i].replace('\n','')
 
         for i in range(len(exploit)):
             exploit[i]=exploit[i].replace('\n','')
-
+        """
         try:
            fs=open("Gomoz/config/gomoz.cfg", 'r')
            while 1:
@@ -254,12 +256,12 @@ class InterGomoz(wx.Frame):
         r11=request.Request(0, target, "", "/", exploit, jspinc)
         r12=request.Request(0, target, "", "/", exploit, jspinc+'?')
 
-        for i in range(1,3):
+        """for i in range(1,3):
             req1="r%s.set%s()" % (i,mode)
             req2="r%s.start()" % i
             exec(req1)
             exec(req2)
-            
+            """    
         import time
         start=time.time()
 
@@ -271,37 +273,52 @@ class InterGomoz(wx.Frame):
         target  = r1.target
         path    = r1.directory
         r1.scan()
-        
-        
+
+       
         fd=open('Gomoz/log/gomoz.log','a')          
         try:
             k = 0
             v = 0
             for url in r1.stack:
                 owned=False
-                snapshot=time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
                 print "[+] "+url
-                data=r1.wget(url)
-                print data
-                #data='c99shell'
-                if data is None:
-                    status='No vulnerable'
-                    fd.write("["+snapshot+"] "+url+" [No vulnerable]"+"\n")
-                    pass
+                t=url.replace('http://','')
+                if ':' in t:
+                    port = t.split(':')[1].split('/')[0]
+                    host = t.split(':')[0]
+                elif '/' in t:
+                    host = t.split('/')[0]
+                    port = 80
+                else: port = 80
+               
+                s=Gomoz.scan.ScanOne(host, port)
+                result = s.GetResult()
+                #if s[port] != "open":
+                if result != "open":
+                    status = "no response"
+                    data = None
+                else:    
+                    data=r1.wget(url)
+                    print result,data
                 
+                snapshot=time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
+ 
+                if data is None or data=="":
+                    if status != "no response":
+                        status='not vulnerable'
+                elif data == 1:
+                    status='not vulnerable'
                 else:
-                     #data=data.replace('\r\n','\n')
                      if data.find(keyword) == -1:
-                         status='No vulnerable'
-                         fd.write("["+snapshot+"] "+url+" [No vulnerable]"+"\n")
-
+                         status='not vulnerable'
                      else:
-                         status='Vulnerable'
+                         status='vulnerable'
                          owned=True
-                         fd.write("["+snapshot+"] "+url+" [Vulnerable]"+"\n")
-                         
+                fd.write("["+snapshot+"] "+url+" ["+status+"] "+"\n")  
+
                 if owned==True:
-                    status='Vulnerable'
+                    status='vulnerable'
+                    #self.frame.lc_sources.SetItemTextColour(index, colour)
                     v =+ 1
                 a, b=len(target), len(exploit)
                 try:
@@ -317,6 +334,9 @@ class InterGomoz(wx.Frame):
                                 self.lc_sources.SetStringItem(num_items, 1, str(target[i]))
                                 self.lc_sources.SetStringItem(num_items, 2, str(exploit[j]))
                                 self.lc_sources.SetStringItem(num_items, 3, str(timer))
+                                # if status=="not vulnerable":
+                                #    color="WX.RED"
+                                #    self.frame.lc_sources.SetItemTextColour(num_items, color)
                                 self.lc_sources.SetStringItem(num_items, 4, status)
                                 self.statusbar.SetStatusText(str(exploit[j]), 0)
                                 end=time.time()
@@ -324,19 +344,10 @@ class InterGomoz(wx.Frame):
                                 self.statusbar.WriteStatus(str(s)+" sec", 3)
                                 self.statusbar.WriteStatus(str("Scanning ..."), 1)
                                 k += 1
-                            exploit[j]=exploit[j][len(path):].replace(path, '')
+                                exploit[j]=exploit[j][len(path):].replace(path, '')
                             
                 except Exception, e:
                     print(str(e))
-                
-##                if data is None or data =='':
-##                    status='no response'
-##            if owned==True:
-##                status='Vulnerable'
-##
-##            counter=self.GetID()        
-##            self.InputScan(counter, status)
-                
             t=len(exploit)*len(target)
             
             self.statusbar.WriteStatus(str("Scan finished"), 0)
@@ -359,10 +370,10 @@ class InterGomoz(wx.Frame):
         self.SetSize((800, 600))
         self.label_1 = wx.StaticText(self, -1, _("Timer:"))
         #self.label_1.SetFont(wx.Font(8, wx.ROMAN, wx.NORMAL, wx.BOLD))
-        self.label_1.SetForegroundColour('white')
+        self.label_1.SetForegroundColour('black')
 
         self.label_timer=wx.StaticText(self, -1, '00:00:00:00')
-        self.label_timer.SetForegroundColour('yellow')
+        self.label_timer.SetForegroundColour('red')
 
         self.timer = wx.PyTimer(self.Notify)
         self.timer.Start(1000)
@@ -370,7 +381,7 @@ class InterGomoz(wx.Frame):
 
         
         self.label_2 = wx.StaticText(self, -1, ("Hosts:"))
-        self.label_2.SetForegroundColour('white')       
+        self.label_2.SetForegroundColour('black')       
         self.cb_targets = wx.ComboBox(self, -1, "", choices=[""], style=wx.CB_DROPDOWN|wx.CB_SORT)
         
         self.cb_targets.SetBackgroundColour(wx.BLACK)
@@ -379,14 +390,14 @@ class InterGomoz(wx.Frame):
         
         self.label_4 = wx.StaticText(self, -1, ("Scan:"))
         #self.label_4.SetFont(wx.Font(8, wx.ROMAN, wx.NORMAL, wx.BOLD))
-        self.label_4.SetForegroundColour('white')
+        self.label_4.SetForegroundColour('black')
         
         self.cb_input = wx.CheckBox(self, -1, ("Input"))
         self.cb_single = wx.CheckBox(self, -1, ("Single"))
         self.cb_mass = wx.CheckBox(self, -1, ("Mass"))
         self.cb_glob = wx.CheckBox(self, -1, ("Global"))
         
-        self.cb_input.SetForegroundColour('red')
+        """self.cb_input.SetForegroundColour('red')
         self.cb_input.SetBackgroundColour('black')
         self.cb_single.SetForegroundColour('red')
         self.cb_single.SetBackgroundColour('black')
@@ -394,7 +405,7 @@ class InterGomoz(wx.Frame):
         self.cb_glob.SetBackgroundColour('black')
         self.cb_mass.SetForegroundColour('red')
         self.cb_mass.SetBackgroundColour('black')
-        
+        """
         self.cb_input.SetValue(0)
         self.cb_single.SetValue(1)
         self.cb_glob.SetValue(0)
@@ -402,7 +413,7 @@ class InterGomoz(wx.Frame):
 
         self.label_5 = wx.StaticText(self, -1, ("Path    :"))
         #self.label_5.SetFont(wx.Font(8, wx.SWISS, wx.NORMAL, wx.BOLD))
-        self.label_5.SetForegroundColour('white')
+        self.label_5.SetForegroundColour('black')
 
         self.tc_url = wx.TextCtrl(self, -1, ("/"))
         self.tc_url.SetFont(wx.Font(8, wx.SWISS, wx.NORMAL, wx.BOLD))
@@ -412,7 +423,7 @@ class InterGomoz(wx.Frame):
     
         self.label_6 = wx.StaticText(self, -1, ("Proxy   :"))
         #self.label_6.SetFont(wx.Font(8, wx.SWISS, wx.NORMAL, wx.BOLD))
-        self.label_6.SetForegroundColour('white')
+        self.label_6.SetForegroundColour('black')
         
         self.cb_proxy = wx.ComboBox(self, -1, choices=[""], style=wx.CB_DROPDOWN|wx.CB_SORT)
         #self.cb_proxy.SetSelection(1)
@@ -422,7 +433,7 @@ class InterGomoz(wx.Frame):
     
         self.label_7 = wx.StaticText(self, -1, ("Exploit :"))
         #self.label_7.SetFont(wx.Font(8, wx.SWISS, wx.NORMAL, wx.BOLD))
-        self.label_7.SetForegroundColour('white')
+        self.label_7.SetForegroundColour('black')
             
         self.cb_exploit = wx.ComboBox(self, -1, choices=[""], style=wx.CB_DROPDOWN|wx.CB_SORT)
         #self.cb_exploit.SetFont(wx.Font(8, wx.SWISS, wx.NORMAL, wx.BOLD))

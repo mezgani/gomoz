@@ -2,7 +2,7 @@ import socket
 import sys
 import threading, Queue
 
-MAX_THREADS = 200
+MAX_THREADS = 150
 
 class Scanner(threading.Thread):
     def __init__(self, src, dsc):
@@ -32,7 +32,10 @@ class Scanner(threading.Thread):
                 self.outpipe.put((host, port, 'open'))
                 sd.close()
 
-def scan(host, start, stop, nthreads=MAX_THREADS):
+
+def scan(host, start, stop, nthreads):
+    if nthreads is None or nthreads =='':
+        nthreads = MAX_THREADS
     toscann = Queue.Queue()
     scanned = Queue.Queue()
 
@@ -57,3 +60,27 @@ def scan(host, start, stop, nthreads=MAX_THREADS):
     return response
 
 
+
+
+class ScanOne:
+    def __init__(self, host, port):
+        self.host = host
+        self.port = port
+
+    def GetResult(self):
+        socket.setdefaulttimeout(2)
+        try:	
+            sock=socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            try:
+                sock.connect((self.host, self.port))
+                sock.settimeout(100)
+                return ("open") 
+            except socket.error, reason:
+                erno, error=reason
+                return ("close")
+        except :
+            pass	
+        
+        finally:
+            sock.close()
+		

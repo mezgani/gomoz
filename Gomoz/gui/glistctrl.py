@@ -78,7 +78,7 @@ class CheckListCtrl(wx.lib.mixins.listctrl.ColumnSorterMixin, threading.Thread):
         self.frame.lc_sources.SetColumnWidth(1, 170)
         self.frame.lc_sources.SetColumnWidth(2, 320)
         self.frame.lc_sources.SetColumnWidth(3, 120)
-        self.frame.lc_sources.SetColumnWidth(4, 70)
+        self.frame.lc_sources.SetColumnWidth(4, 100)
          # initialize the column sorter
         #wx.lib.mixins.listctrl.ColumnSorterMixin.__init__(self.frame.lc_sources,len(columns)) 
         
@@ -117,8 +117,6 @@ class CheckListCtrl(wx.lib.mixins.listctrl.ColumnSorterMixin, threading.Thread):
         """
 
    
-   
-        
     def SetStyle(self,style):
         if self.style is None or self.style == "":
             self.style=wx.LC_REPORT|wx.SUNKEN_BORDER
@@ -198,10 +196,10 @@ class CheckListCtrl(wx.lib.mixins.listctrl.ColumnSorterMixin, threading.Thread):
         self.frame.Bind(wx.EVT_MENU, self.OnServerInfo, self.frame.servermenu)
         self.frame.Bind(wx.EVT_MENU, self.OnBrowse, self.frame.browsemenu)
         self.frame.Bind(wx.EVT_MENU, self.OnConsole, self.frame.consolemenu)
-        self.frame.Bind(wx.EVT_UPDATE_UI, self.OnUpdateSimple, self.frame.consolemenu)        
+        self.frame.Bind(wx.EVT_UPDATE_UI, self.OnUpdateSimple, self.frame.consolemenu)  
         self.frame.Bind(wx.EVT_MENU, self.OnRemove, self.frame.deletemenu)
-
         self.frame.lc_sources.Bind(wx.EVT_CONTEXT_MENU, self.OnShowPopup)
+
 
 
 
@@ -354,7 +352,7 @@ class CheckListCtrl(wx.lib.mixins.listctrl.ColumnSorterMixin, threading.Thread):
 
 
         self.frame.c_stack[request]=item
-        print self.frame.c_stack[request]
+        #print self.frame.c_stack[request]
         
         #self.frame.c_stack[request].Close()
 
@@ -428,7 +426,6 @@ class CheckListCtrl(wx.lib.mixins.listctrl.ColumnSorterMixin, threading.Thread):
             
         webbrowser.open("http://"+browser+exploit)
     
-
         #self.frame.notebook_browser = wx.Panel(self.frame.notebook, -1, size=(200,200))
         #self.frame.notebook_browser.SetBackgroundColour('yellow')
         #self.frame.notebook.AddPage(self.frame.notebook_browser, ("http://"+browser+'/'))
@@ -437,6 +434,9 @@ class CheckListCtrl(wx.lib.mixins.listctrl.ColumnSorterMixin, threading.Thread):
         ##frm.geturl('http://127.0.0.1:8080/')
         ##frm.Show()
         ##app.MainLoop()
+
+    def OnColClick(self, event):
+        pass
 
     def OnRemove(self, event):
         gtoolbar.GomozToolBar.OnRemove(self.frame.tool,event)

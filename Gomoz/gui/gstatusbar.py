@@ -4,11 +4,11 @@ class GomozStatusBar(wx.StatusBar):
     def __init__(self, parent):
         wx.StatusBar.__init__(self, parent)
         self.SetFieldsCount(4)
-        self.SetStatusText('Welcome to Gomoz', 0)
+        #self.SetStatusText('Welcome to Gomoz', 0)
         self.SetStatusWidths([-5, -2, -2,-1])
         #self.icon = wx.StaticBitmap(self, -1, wx.Bitmap('Gomoz/image/apache.png'))
         self.SetStatusText('0 URL Scanned', 1)
-        self.SetBackgroundColour("gray")
+        #self.SetBackgroundColour("white")
         self.SetForegroundColour(wx.RED)
         self.Bind(wx.EVT_SIZE, self.OnSize)
         #self.PlaceIcon()

@@ -45,12 +45,12 @@ class FirstPage(GomozIntroCgf):
 
 
         for i in range(2,8):
-            text="self.label_%s.SetForegroundColour(\"green\")" % i
+            text="self.label_%s.SetForegroundColour(\"black\")" % i
             exec(text)
-            bg="self.input_%s.SetBackgroundColour(wx.BLACK)" % i
-            fg="self.input_%s.SetForegroundColour(wx.GREEN)" % i
-            exec(bg)
-            exec(fg)
+            #bg="self.input_%s.SetBackgroundColour(wx.BLACK)" % i
+            #fg="self.input_%s.SetForegroundColour(wx.GREEN)" % i
+            #exec(bg)
+            #exec(fg)
 
         self.hbox = wx.BoxSizer(wx.HORIZONTAL)
         self.vbox = wx.BoxSizer(wx.VERTICAL)
@@ -66,11 +66,11 @@ class FirstPage(GomozIntroCgf):
             self.scan=''
         
         self.c99.SetForegroundColour('red')
-        self.c99.SetBackgroundColour('black')
+        #self.c99.SetBackgroundColour('black')
         self.r57.SetForegroundColour('red')
-        self.r57.SetBackgroundColour('black')
+        #self.r57.SetBackgroundColour('black')
         self.others.SetForegroundColour('red')
-        self.others.SetBackgroundColour('black')
+        #self.others.SetBackgroundColour('black')
     
 
         self.hbox.Add(self.c99)
@@ -146,7 +146,7 @@ class FirstPage(GomozIntroCgf):
         self.text="""To setup scan option, we must make up all var in the forms follow."""
         titleText = wx.StaticText(self, -1, self.text)
         titleText.SetFont(wx.Font(7, wx.SWISS, wx.NORMAL, wx.BOLD))
-        titleText.SetForegroundColour("green")
+        #titleText.SetForegroundColour("green")
         self.sizz.Add(titleText, 0, wx.ALIGN_CENTRE | wx.ALL, 5)
         #self.sizz.Add(wx.StaticLine(self, -1), 0, wx.EXPAND | wx.ALL, 5)
         self.sizer.Add(self.sizz, 0, wx.EXPAND | wx.ALL, 5)
