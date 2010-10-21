@@ -112,23 +112,25 @@ class GomozToolBar:
 
 
         
-    def SetCombodata(self, files, mode):
+    def SetComboData(self, files, mode):
         fd = open(files,'rb')
-        data=fd.read()
-        req=data.split('\n')
-        
-        for i in req:
-            item=i.split('\r')
-            mode.Append(item[0])
+        data=fd.readlines()       
+        for i in data:
+            item=i.strip()
+            if item is not None:
+                mode.Append(item)
         fd.close
-      	return mode.GetCount()
+        
+    def GetDataAccount(self, files):
+        fd = open(files, 'r')
+        return len(fd.readlines())
 
         
-    def GetCombodata(self, files):
+    def GetFirstComboData(self, files):
         mode=[]
         fd = open(files,'rb')
         mode=fd.readlines()
-        return mode
+        return mode[0].strip()
         
             
     def OnNewScan(self,event=None):

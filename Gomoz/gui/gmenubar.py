@@ -25,10 +25,6 @@ class GomozMenuBar(gtoolbar.GomozToolBar, threading.Thread):
         self.cb_proxy=''
         self.cb_exploit=''
             
-    
-        
-
-
         self.frame.menu_file = wx.Menu()
         self.frame.smenu_new = wx.MenuItem(self.frame.menu_file, MN_NEW, ("&New...\tCtrl-N"), "New scan", wx.ITEM_NORMAL)
         bmp = wx.Bitmap("Gomoz/image/new_scan.png", wx.BITMAP_TYPE_PNG)
@@ -123,19 +119,16 @@ class GomozMenuBar(gtoolbar.GomozToolBar, threading.Thread):
         self.frame.Bind(wx.EVT_MENU,self.OnOpen,   id = MN_OPEN)  
         self.frame.Bind(wx.EVT_MENU,self.OnSavs,   id = MN_SAVS)
         self.frame.Bind(wx.EVT_MENU,self.OnExit,   id = MN_EXIT)
-
         self.frame.Bind(wx.EVT_MENU,self.OnExploit,id = MN_EXPLOIT)
         self.frame.Bind(wx.EVT_MENU,self.OnProxy,  id = MN_PROXY)
         self.frame.Bind(wx.EVT_MENU,self.OnTarget, id = MN_TARGET)
         self.frame.Bind(wx.EVT_MENU,self.OnScanPort, id= MN_SELCSHO)
-        
         self.frame.Bind(wx.EVT_MENU,self.OnSelectAll, id= MN_SELCALL)
         self.frame.Bind(wx.EVT_MENU,self.OnSelectNone, id= MN_SELCNON)
         self.frame.Bind(wx.EVT_MENU,self.OnSetFGColour, id= MN_FGCOLOR)
         self.frame.Bind(wx.EVT_MENU,self.OnSetBGColour, id= MN_BGCOLOR)
         self.frame.Bind(wx.EVT_MENU,self.OnEnableEditing, id= MN_ENEDIT)
         self.frame.Bind(wx.EVT_MENU,self.OnEditItem, id= MN_EDITIT)
-
         self.frame.Bind(wx.EVT_MENU,self.OnAbout,  id = MN_ABOUT)
         self.frame.Bind(wx.EVT_MENU,self.OnHelp,  id = MN_HELP)
 
@@ -148,28 +141,7 @@ class GomozMenuBar(gtoolbar.GomozToolBar, threading.Thread):
         
 
     def OnScanPort(self, event):
-        gtoolbar.GomozToolBar.OnPortScan(self, event).start()
-##       try:    
-##          index=self.GetSelection()
-##          if index != -1:
-##              target=self.frame.lc_sources.GetItem(index, 1).GetText()
-##          else:
-##              target=None
-##       except :
-##          pass
-##        
-##       
-##       if target is None and target == '':
-##            target='127.0.0.1'
-##            
-##       app = wx.PySimpleApp()
-##       title="Gomoz port scan"
-##       dlg=portscan.PortScanFrame(self.frame, id=-1, title=title, pos=wx.DefaultPosition, size=(400, 320)) 
-##       dlg.SetTarget(target)
-##       dlg.Center()
-##       dlg.Show()
-##       app.MainLoop()
-
+        gtoolbar.GomozToolBar.OnPortScan(self, event)
 
     def SetCbTarget(self, target):
         self.cb_targets=target
@@ -182,20 +154,6 @@ class GomozMenuBar(gtoolbar.GomozToolBar, threading.Thread):
 
 
 
-
-    """    def __set_combodata(self, files, mode):
-        fd = open(files,'rb')
-        data=fd.read()
-        req=data.split('\n')
-        
-        for i in req:
-            item=i.split('\r')
-            mode.Append(item[0])
-        fd.close
-      	return mode.GetCount() """
-
-
-    
     def OnOpen(self,event):
         title="Select file"
         wildcard = "xml files (*.xml)|*.xml |sqlite files (*.db)|*.db"
@@ -418,37 +376,24 @@ class GomozMenuBar(gtoolbar.GomozToolBar, threading.Thread):
         pass
 
     def OnExploit(self,event):
+        title="Select exploit file"
         wildcard = "Text file (*.txt)|*.txt|All file (*.*)|(*.*)"
-        title = "Select exploit file"
-        dlg = wx.FileDialog(self.frame,title,wildcard,style = wx.OPEN)
-        result = dlg.ShowModal()
+        dlg = wx.FileDialog(self.frame, title, wildcard, style = wx.OPEN)
+	result = dlg.ShowModal()
 	path = dlg.GetPath()
 	if result==wx.ID_OK:
            self.cb_exploit.Clear()
-           self.exploit_count=gtoolbar.GomozToolBar.SetCombodata(self, path, self.cb_exploit)
-           if self.exploit_count > 1: 
-             gstatusbar.GomozStatusBar.SetStatusText(self.frame.statusbar, str(self.exploit_count)+ " exploits loaded", 1)
-           elif self.exploit_count == 1:
-             gstatusbar.GomozStatusBar.SetStatusText(self.frame.statusbar, str(self.exploit_count)+ " exploit loaded", 1)               
+           gtoolbar.GomozToolBar.SetComboData(self, path, self.cb_exploit)
+           self.exploit_count=gtoolbar.GomozToolBar.GetDataAccount(self, path)
+           self.cb_exploit.SetSelection(0)
+           if self.exploit_count > 1:
+               gstatusbar.GomozStatusBar.SetStatusText(self.frame.statusbar, str(self.exploit_count)+ " exploits loaded", 1)
+           elif self.exploit_count==1:
+               gstatusbar.GomozStatusBar.SetStatusText(self.frame.statusbar, str(self.exploit_count)+ " exploit loaded", 1)
+               
 	dlg.Destroy()
-	
 
 
-    def OnProxy(self,event):
-        title="Select proxy file"
-        wildcard = "Text file (*.txt)|*.txt|All file (*.*)|(*.*)"
-        dlg = wx.FileDialog(self.frame,title, wildcard,style = wx.OPEN)
-        result = dlg.ShowModal()
-	path = dlg.GetPath()
-	if result==wx.ID_OK:
-           self.cb_proxy.Clear()
-           self.proxy_count=gtoolbar.GomozToolBar.SetCombodata(self, path, self.cb_proxy)
-           if self.proxy_count > 1: 
-              gstatusbar.GomozStatusBar.SetStatusText(self.frame.statusbar, str(self.proxy_count)+ " proxies loaded", 1)
-           elif self.proxy_count==1:
-              gstatusbar.GomozStatusBar.SetStatusText(self.frame.statusbar, str(self.proxy_count)+ " proxy loaded", 1)
-	dlg.Destroy()
-	
 
     def OnTarget(self,event):
         title="Select target file"
@@ -458,9 +403,9 @@ class GomozMenuBar(gtoolbar.GomozToolBar, threading.Thread):
 	path = dlg.GetPath()
 	if result==wx.ID_OK:
            self.cb_targets.Clear()
-           self.target_count=gtoolbar.GomozToolBar.SetCombodata(self, path, self.cb_targets)
-           #d=gtoolbar.GomozToolBar.GetCombodata(self, path)
-           #self.cb_targets.SetValue(str(d[0]))
+           gtoolbar.GomozToolBar.SetComboData(self, path, self.cb_targets)
+           self.target_count=gtoolbar.GomozToolBar.GetDataAccount(self, path)
+           self.cb_targets.SetSelection(0)
            if self.target_count > 1:
                gstatusbar.GomozStatusBar.SetStatusText(self.frame.statusbar, str(self.target_count)+ " targets loaded", 1)
            elif self.target_count==1:
@@ -468,6 +413,25 @@ class GomozMenuBar(gtoolbar.GomozToolBar, threading.Thread):
                
 	dlg.Destroy()
 
+
+
+    def OnProxy(self,event):
+        title="Select proxy file"
+        wildcard = "Text file (*.txt)|*.txt|All file (*.*)|(*.*)"
+        dlg = wx.FileDialog(self.frame, title, wildcard, style = wx.OPEN)
+	result = dlg.ShowModal()
+	path = dlg.GetPath()
+	if result==wx.ID_OK:
+           self.cb_proxy.Clear()
+           gtoolbar.GomozToolBar.SetComboData(self, path, self.cb_proxy)
+           self.proxy_count=gtoolbar.GomozToolBar.GetDataAccount(self, path)
+           self.cb_proxy.SetSelection(0)
+           if self.proxy_count > 1:
+               gstatusbar.GomozStatusBar.SetStatusText(self.frame.statusbar, str(self.proxy_count)+ " proxyies loaded", 1)
+           elif self.proxy_count==1:
+               gstatusbar.GomozStatusBar.SetStatusText(self.frame.statusbar, str(self.proxy_count)+ " proxy loaded", 1)
+               
+	dlg.Destroy()
 
     
 
@@ -583,6 +547,7 @@ class GomozMenuBar(gtoolbar.GomozToolBar, threading.Thread):
               colour = dlg.GetColourData().GetColour()
               index = self.frame.lc_sources.GetFirstSelected()
               while index != -1:
+                print colour
                 self.frame.lc_sources.SetItemTextColour(index, colour)
                 index = self.frame.lc_sources.GetNextSelected(index)
            dlg.Destroy()
@@ -626,8 +591,6 @@ class GomozMenuBar(gtoolbar.GomozToolBar, threading.Thread):
 	self.cb_exploit.Clear()
 
     def OnAbout(self, event):
-        #self.OnDumpData()
-        #self.OnDumpSelecMenu()
         dlg=about.AboutDialog(self.frame, -1, 'About dialog box')
         dlg.OnAboutBox(event=None)
         dlg.Destroy()

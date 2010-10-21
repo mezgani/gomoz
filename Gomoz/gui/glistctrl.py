@@ -263,9 +263,36 @@ class CheckListCtrl(wx.lib.mixins.listctrl.ColumnSorterMixin, threading.Thread):
                     tab['OPTscan']=txt.split('=')[1].replace('\n','')
            fs.close()
            return tab
-        except:
-            pass
+        except Exception, e:
+            raise(e)
         
+        
+    def OnGetData(self, path, mode):
+            try:
+                fs=open(path, 'r')
+                while 1:
+                    txt=fs.readline()
+                    if txt == '':
+                        break
+                    if txt[0]!='#': 
+                        if txt.find('PHPinc') != -1 and mode=='.php':
+                            return txt.split('=')[1].replace('\n','')
+                            
+                        if txt.find('TXTinc') != -1 and mode=='.txt':
+                            return txt.split('=')[1].replace('\n','')
+                            
+                        if txt.find('ASPinc') != -1 and mode=='.asp':
+                            return txt.split('=')[1].replace('\n','')
+                                  
+                        if txt.find('JSPinc') != -1 and mode=='.jsp':
+                            return txt.split('=')[1].replace('\n','')
+                                
+                        if txt.find('JPGinc') != -1 and mode=='.jpg':
+                            return txt.split('=')[1].replace('\n','')
+                                          
+                fs.close()
+            except Exception, e:
+                raise(e)
         
     def OnUpdateSimple(self, event):
         event.Enable(self.enabled)
@@ -279,9 +306,15 @@ class CheckListCtrl(wx.lib.mixins.listctrl.ColumnSorterMixin, threading.Thread):
             pass
         
     def OnPopupItemSelected(self, event):
-        item = self.frame.popupmenu.FindItemById(event.GetId())
-        text = item.GetText()
-        wx.MessageBox("You selected item '%s'" % text)
+        index = self.frame.lc_sources.GetFocusedItem()
+        if index ==-1:
+           wx.MessageBox("Please select a row !","Restart Scan info")
+        else:   
+            index=gmenubar.GomozMenuBar.GetSelection(self.frame.menu)
+            target=self.frame.lc_sources.GetItem(index, 1).GetText()
+            exploit=self.frame.lc_sources.GetItem(index, 2).GetText()
+            self.frame.lc_sources.SetStringItem(index, 4, "status")
+        wx.MessageBox("You selected item '%s'" % server)
 
     def OnServerInfo(self, event):
         index = self.frame.lc_sources.GetFocusedItem()
@@ -356,7 +389,7 @@ class CheckListCtrl(wx.lib.mixins.listctrl.ColumnSorterMixin, threading.Thread):
         
         #self.frame.c_stack[request].Close()
 
-        test=console.GomozConsole(self.frame.notebook_console, -1, '%')
+        test=console.GomozConsole(self.frame.notebook_console, -1, '%', "user@"+consoles+":~ ")
         """ 
         url='http://'+str(consoles)+'/'
         print url
@@ -377,33 +410,6 @@ class CheckListCtrl(wx.lib.mixins.listctrl.ColumnSorterMixin, threading.Thread):
         #self.frame.label.SetFont(wx.Font(8, wx.ROMAN, wx.NORMAL, wx.BOLD))
           
 
-        def OnGetData(self, path, mode):
-            try:
-                fs=open(path, 'r')
-                while 1:
-                    txt=fs.readline()
-                    if txt == '':
-                        break
-                    if txt[0]!='#': 
-                        if txt.find('PHPinc') != -1 and mode=='.php':
-                            return txt.split('=')[1].replace('\n','')
-                            
-                        if txt.find('TXTinc') != -1 and mode=='.txt':
-                            return txt.split('=')[1].replace('\n','')
-                            
-                        if txt.find('ASPinc') != -1 and mode=='.asp':
-                            return txt.split('=')[1].replace('\n','')
-                                  
-                        if txt.find('JSPinc') != -1 and mode=='.jsp':
-                            return txt.split('=')[1].replace('\n','')
-                                
-                        if txt.find('JPGinc') != -1 and mode=='.jpg':
-                            return txt.split('=')[1].replace('\n','')
-                                          
-                fs.close()
-            except:
-                pass
-
     def OnBrowse(self, event):
 
         index=gmenubar.GomozMenuBar.GetSelection(self.frame.menu)
@@ -417,12 +423,14 @@ class CheckListCtrl(wx.lib.mixins.listctrl.ColumnSorterMixin, threading.Thread):
            browser="localhost"
         try:  
             ext=re.findall("\.\w{3}", exploit)
+            ext = ext[0]
             if exploit.find(ext)>0:
-                rep=self.OnGetData('Gomoz/config/gomoz.cfg', ext)
-                replace('[path]', rep)
+                include = self.OnGetData('Gomoz/config/gomoz.cfg', ext)
+                print include
+                exploit = str(exploit).replace('[path]', include)
         except Exception as e:
-            print (str(e))
-            pass
+            raise(e)
+        print exploit
             
         webbrowser.open("http://"+browser+exploit)
     

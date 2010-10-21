@@ -22,9 +22,9 @@ class InterGomoz(wx.Frame):
         self.icon = wx.Icon(ico, wx.BITMAP_TYPE_ICO) 
         self.SetIcon(self.icon)
 
-        self.c_stack={}
+       
         self.r_stack=[0]
-
+        self.c_stack={}
         # The notebook              
         self.notebook = wx.aui.AuiNotebook(self)
         self.notebook.SetBackgroundColour('green')
@@ -117,60 +117,68 @@ class InterGomoz(wx.Frame):
         self.logo_max = logo.Add(bmp)
         self.lc_sources.AssignImageList(logo, wx.IMAGE_LIST_SMALL)
         
+
+    def OnInput(self):
+         target=[self.cb_targets.GetValue()]
+         exploit=[self.cb_exploit.GetValue()]
+         self.CheckScan(target, exploit, "input")
+
+    def OnSingle(self):
+        target=[self.cb_targets.GetValue()]
+        if self.cb_exploit.GetValue() not in self.cb_exploit.GetItems():
+            exploit = [self.cb_exploit.GetValue()]
+            if isinstance(self.cb_exploit.GetItems(),list):
+                exploit +=self.cb_exploit.GetItems()
+        else: exploit=self.cb_exploit.GetItems()
+        self.CheckScan(target, exploit, "single")
+            
+
+    def OnGlob(self):
+        if self.cb_targets.GetValue() not in self.cb_targets.GetItems():
+            target = [self.cb_targets.GetValue()]
+            if isinstance(self.cb_targets.GetItems(), list):
+                target += self.cb_targets.GetItems()
+        else: target=self.cb_targets.GetItems()
+        exploit=[self.cb_exploit.GetValue()]
+        self.CheckScan(target, exploit, "glob")
         
+
+    def OnMass(self):
+        target=[self.cb_targets.GetValue()]
+        if self.cb_exploit.GetValue() not in self.cb_exploit.GetItems():
+            exploit = [self.cb_exploit.GetValue()]
+            if isinstance(self.cb_exploit.GetItems(),list):
+                exploit +=self.cb_exploit.GetItems()
+        else: exploit=self.cb_exploit.GetItems()
+        if self.cb_targets.GetValue() not in self.cb_targets.GetItems():
+            target = [self.cb_targets.GetValue()]
+            if isinstance(self.cb_targets.GetItems(),list):
+                target += self.cb_targets.GetItems()
+        else: target=self.cb_targets.GetItems()
+        self.CheckScan(target, exploit, "mass")
+            
     def OnStartScan(self, event):
-        #il = wx.ImageList(16,16, True)
-        #lm='Gomoz/image\\apache.png'
-        #bmp = wx.Bitmap(lm, wx.BITMAP_TYPE_PNG)
-        #il_max = il.Add(bmp)
-        #self.lc_sources.AssignImageList(il, wx.IMAGE_LIST_SMALL)
-##        self.GetServerLogo('image\\apache.png')
-##        
-##        import data
-##        rows=data.row
-##
-##        rows = self.OnChoice()
-##        print rows
-##        for item in rows:
-##            index = self.lc_sources.InsertStringItem(sys.maxint, str(item[0]))#str
-##            for col, text in enumerate(item[1:]):
-##                self.lc_sources.SetStringItem(index, col+1, text)
-##             # give each item a random image
-##            img = self.logo_max
-##            self.lc_sources.SetItemImage(index, img, img)
-##
-##        print self.cb_exploit.GetValue()
         choices=["cb_input" , "cb_single" , "cb_glob", "cb_mass"]
         for i in choices:
             req="%s=self.%s.GetValue()" % (i,i)
             exec(req)
         if cb_input==True and cb_single==False and cb_glob == False and cb_mass==False: 
-            target=[self.cb_targets.GetValue()]
-            exploit=[self.cb_exploit.GetValue()]
-            self.CheckScan(target, exploit, "input")
+            self.OnInput()
         elif cb_single==True and cb_input==False and cb_glob == False and cb_mass==False: 
-            target=[self.cb_targets.GetValue()]
-            exploit=self.cb_exploit.GetItems()
-            self.CheckScan(target, exploit,"single")
+            self.OnSingle()
         elif cb_glob==True and cb_input==False and cb_single == False and cb_mass==False: 
-            target=self.cb_targets.GetItems()
-            exploit=[self.cb_exploit.GetValue()]
-            self.CheckScan(target, exploit,"glob")
+            self.OnGlob()
         elif cb_mass==True and cb_input==False and  cb_single==False and cb_glob ==False: 
-            target=self.cb_targets.GetItems()
-            exploit=self.cb_exploit.GetItems()
-            self.CheckScan(target, exploit, "mass")
-            
+            self.OnMass()
         else:
             wx.MessageBox("Please choose one scan option.","Info")
-        print target,exploit
+      
 
     def InputScan(self, req, status):
         defaultx=""
         default =""
         if self.cb_exploit.GetValue() != default or self.cb_targets.GetValue() !=default :
             num_items = self.lc_sources.GetItemCount()
-           
             timer=time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
             self.lc_sources.InsertStringItem(num_items, str(req))
             self.lc_sources.SetStringItem(num_items, 1, self.cb_targets.GetValue())
@@ -185,13 +193,12 @@ class InterGomoz(wx.Frame):
 
 
     def InputScansOn(self, req, target, exploit, status):
-        
-            timer=time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
-            self.lc_sources.InsertStringItem(num_items, str(req))
-            self.lc_sources.SetStringItem(num_items, 1, str(target))
-            self.lc_sources.SetStringItem(num_items, 2, str(exploit))
-            self.lc_sources.SetStringItem(num_items, 3, str(timer))
-            self.lc_sources.SetStringItem(num_items, 4, status)
+        timer=time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
+        self.lc_sources.InsertStringItem(num_items, str(req))
+        self.lc_sources.SetStringItem(num_items, 1, str(target))
+        self.lc_sources.SetStringItem(num_items, 2, str(exploit))
+        self.lc_sources.SetStringItem(num_items, 3, str(timer))
+        self.lc_sources.SetStringItem(num_items, 4, status)
 
             
     def GetID(self):
@@ -208,12 +215,10 @@ class InterGomoz(wx.Frame):
 
 
     def CheckScan(self, target, exploit, mode):
-        """for i in range(len(target)):
-            target[i]=target[i].replace('\n','')
-
-        for i in range(len(exploit)):
-            exploit[i]=exploit[i].replace('\n','')
-        """
+        if '' in target:
+            target.remove('')
+        if '' in exploit:
+            exploit.remove('')
         try:
            fs=open("Gomoz/config/gomoz.cfg", 'r')
            while 1:
@@ -223,38 +228,27 @@ class InterGomoz(wx.Frame):
                 break
              if txt[0]!='#': 
                 if txt.find('PHPinc') != -1:
-                    phpinc=txt.split('=')[1].replace('\n','')                
+                    phpinc=txt.split('=')[1].strip()             
                 if txt.find('TXTinc') != -1:
-                    txtinc=txt.split('=')[1].replace('\n','')
+                    txtinc=txt.split('=')[1].strip()
                 if txt.find('JPGinc') != -1:
-                    jpginc=txt.split('=')[1].replace('\n','')
+                    jpginc=txt.split('=')[1].strip()
                 if txt.find('ASPinc') != -1:
-                    aspinc=txt.split('=')[1].replace('\n','')
+                    aspinc=txt.split('=')[1].strip()
                 if txt.find('JSPinc') != -1:
-                    jspinc=txt.split('=')[1].replace('\n','')                        
+                    jspinc=txt.split('=')[1].strip()                        
                 if txt.find('KEYword') != -1:
-                    keyword=txt.split('=')[1].replace('\n','')
+                    keyword=txt.split('=')[1].strip()
                 if txt.find('OPTscan') != -1:
-                    scan=txt.split('=')[1].replace('\n','')
+                    scan=txt.split('=')[1].strip()
            fs.close()
         except Exception, e:
             wx.MessageBox(str(e),"Info")
     
         print self.cb_proxy.GetValue()
-
-        slfinc=txtinc.split('.txt')[0]
-        r1=request.Request(0, target, "", "/", exploit, phpinc)
-        r2=request.Request(0, target, "", "/", exploit, phpinc+'?')
-        r3=request.Request(0, target, "", "/", exploit, txtinc)
-        r4=request.Request(0, target, "", "/", exploit, txtinc)
-        r5=request.Request(0, target, "", "/", exploit, slfinc)
-        r6=request.Request(0, target, "", "/", exploit, slfinc+'?')
-        r7=request.Request(0, target, "", "/", exploit, jpginc)
-        r8=request.Request(0, target, "", "/", exploit, jpginc+'?')
-        r9=request.Request(0, target, "", "/", exploit, aspinc)
-        r10=request.Request(0, target, "", "/", exploit, aspinc+'?')
-        r11=request.Request(0, target, "", "/", exploit, jspinc)
-        r12=request.Request(0, target, "", "/", exploit, jspinc+'?')
+        path = self.tc_url.GetValue()
+        r1=request.Request(0, target, "", "", path, exploit, phpinc)
+        r2=request.Request(0, target, "", "", path, exploit, phpinc+'?')
 
         """for i in range(1,3):
             req1="r%s.set%s()" % (i,mode)
@@ -262,105 +256,99 @@ class InterGomoz(wx.Frame):
             exec(req1)
             exec(req2)
             """    
-        import time
-        start=time.time()
-
-       
-        """tempo  = r1.stack + r2.stack + r3.stack + r4.stack 
-        tempo += r5.stack + r6.stack + r7.stack + r8.stack"""
         
-        exploit = r1.exploit
-        target  = r1.target
-        path    = r1.directory
+        start=time.time()
+        
+        exploits = r1.exploit
+        targets  = r1.target
+        path     = r1.directory
+        include  = r1.include
         r1.scan()
 
-       
         fd=open('Gomoz/log/gomoz.log','a')          
         try:
             k = 0
             v = 0
-            for url in r1.stack:
-                owned=False
-                print "[+] "+url
-                t=url.replace('http://','')
-                if ':' in t:
-                    port = t.split(':')[1].split('/')[0]
-                    host = t.split(':')[0]
-                elif '/' in t:
-                    host = t.split('/')[0]
+            for host in targets:   
+                if ':' in host:
+                    port = host.split(':')[1].split('/')[0]
+                    target = host.split(':')[0]
+                else: 
                     port = 80
-                else: port = 80
-               
-                s=Gomoz.scan.ScanOne(host, port)
+                    target = host
+                r1.port = port
+                port =  str(port)
+                s=Gomoz.scan.ScanOne(target, int(port))
                 result = s.GetResult()
-                #if s[port] != "open":
-                if result != "open":
-                    status = "no response"
-                    data = None
-                else:    
-                    data=r1.wget(url)
-                    print result,data
                 
-                snapshot=time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
- 
-                if data is None or data=="":
-                    if status != "no response":
-                        status='not vulnerable'
-                elif data == 1:
-                    status='not vulnerable'
-                else:
-                     if data.find(keyword) == -1:
-                         status='not vulnerable'
-                     else:
-                         status='vulnerable'
-                         owned=True
-                fd.write("["+snapshot+"] "+url+" ["+status+"] "+"\n")  
+                for exploit in exploits:
+                    owned = False
+                    url  = r1.ConstructUrl(target, port, exploit, path, include)
+                    if result == "open":
+                        data = r1.wget(url)
+                        print data
+                    else:
+                        status = "no response"
+                        data = None
+                    snapshot=time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
 
-                if owned==True:
-                    status='vulnerable'
-                    #self.frame.lc_sources.SetItemTextColour(index, colour)
-                    v =+ 1
-                a, b=len(target), len(exploit)
-                try:
-                    if (k*a*b % ((a^k) * (b^k)))==0:
-                        
-                        for i in range(len(target)):
-                            for j in range(len(exploit)):
-                                num_items = self.lc_sources.GetItemCount() 
-                                req=self.GetID()
-                                exploit[j] = path + exploit[j]
-                                timer=time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
-                                self.lc_sources.InsertStringItem(num_items, str(req))
-                                self.lc_sources.SetStringItem(num_items, 1, str(target[i]))
-                                self.lc_sources.SetStringItem(num_items, 2, str(exploit[j]))
-                                self.lc_sources.SetStringItem(num_items, 3, str(timer))
-                                # if status=="not vulnerable":
-                                #    color="WX.RED"
-                                #    self.frame.lc_sources.SetItemTextColour(num_items, color)
-                                self.lc_sources.SetStringItem(num_items, 4, status)
-                                self.statusbar.SetStatusText(str(exploit[j]), 0)
-                                end=time.time()
-                                s=("%.3f" % float(end-start))
-                                self.statusbar.WriteStatus(str(s)+" sec", 3)
-                                self.statusbar.WriteStatus(str("Scanning ..."), 1)
-                                k += 1
-                                exploit[j]=exploit[j][len(path):].replace(path, '')
-                            
-                except Exception, e:
-                    print(str(e))
-            t=len(exploit)*len(target)
-            
+                    if data is None or data=="":
+                        if status != "no response":
+                            status = 'not vulnerable'
+                    elif data == 1:
+                        status='page not found'
+                    else:
+                        if data.find(keyword) == -1:
+                            status='not vulnerable'
+                        else:
+                            status='vulnerable'
+                            owned=True
+                    print target,result,str(port)      
+                    fd.write("["+snapshot+"] "+url+" ["+status+"] "+"\n")  
+                    
+                    if owned==True:
+                        status='vulnerable'
+                        v =+ 1
+                    try:
+                        num_items = self.lc_sources.GetItemCount() 
+                        req=self.GetID()
+                        exploit = path + exploit
+                        timer=time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
+                        self.lc_sources.InsertStringItem(num_items, str(req))
+                        if port != 80:
+                            target = target+':'+port
+                        self.lc_sources.SetStringItem(num_items, 1, str(target))
+                        self.lc_sources.SetStringItem(num_items, 2, str(exploit))
+                        self.lc_sources.SetStringItem(num_items, 3, str(timer))
+                        if status=="not vulnerable":
+                            index = self.lc_sources.GetFocusedItem()
+                            if index == -1:
+                                index = 0
+                            color=(255,0,0,255)
+                            self.lc_sources.SetItemTextColour(index+num_items, color)
+                        self.lc_sources.SetStringItem(num_items, 4, status)
+                        self.statusbar.SetStatusText(str(exploit), 0)
+                        end=time.time()
+                        s=("%.3f" % float(end-start))
+                        self.statusbar.WriteStatus(str(s)+" sec", 3)
+                        self.statusbar.WriteStatus(str("Scanning ..."), 1)
+                        k += 1
+                        exploit=exploit[len(path):].replace(path, '')
+                        target = target.replace(':'+port, '') 
+                        if status == "no response": break
+                    except Exception, e:
+                        raise(e)
+
+                      
             self.statusbar.WriteStatus(str("Scan finished"), 0)
-            msg=str(t)+" URL scanned"
+            msg=str(k)+" URL scanned"
             self.statusbar.WriteStatus(str(msg), 1)
-
-            
             self.statusbar.WriteStatus(str(v)+" URL vulnerable(s)",2)
-           
+            fd.close()
         except AttributeError, e :
-            print (str(e))
+            raise(e)
         except Exception, ex :
-            print (str(ex))
+            raise(ex)
 
 
     def __set_properties(self):
@@ -384,8 +372,8 @@ class InterGomoz(wx.Frame):
         self.label_2.SetForegroundColour('black')       
         self.cb_targets = wx.ComboBox(self, -1, "", choices=[""], style=wx.CB_DROPDOWN|wx.CB_SORT)
         
-        self.cb_targets.SetBackgroundColour(wx.BLACK)
-        self.cb_targets.SetForegroundColour(wx.GREEN)
+        #self.cb_targets.SetBackgroundColour(wx.BLACK)
+        #self.cb_targets.SetForegroundColour(wx.GREEN)
         self.cb_targets.SetValue("")
         
         self.label_4 = wx.StaticText(self, -1, ("Scan:"))
@@ -416,7 +404,7 @@ class InterGomoz(wx.Frame):
         self.label_5.SetForegroundColour('black')
 
         self.tc_url = wx.TextCtrl(self, -1, ("/"))
-        self.tc_url.SetFont(wx.Font(8, wx.SWISS, wx.NORMAL, wx.BOLD))
+        #self.tc_url.SetFont(wx.Font(8, wx.SWISS, wx.NORMAL, wx.BOLD))
         self.tc_url.SetBackgroundColour(wx.WHITE)
         self.tc_url.SetForegroundColour(wx.BLACK)
 

