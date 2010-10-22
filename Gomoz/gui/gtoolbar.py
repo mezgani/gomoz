@@ -5,6 +5,7 @@ import portscan
 import gwizard, ghelp
 import glistctrl
 import threading
+import console
  
 class GomozToolBar:
     def __init__(self, frame, panel, sources):
@@ -80,7 +81,7 @@ class GomozToolBar:
         self.frame.Bind(wx.EVT_TOOL, self.OnRemove, id=ID_DELETE)
         self.frame.Bind(wx.EVT_TOOL, self.OnRemoveAll, id=ID_DELETE_ALL)
         self.frame.Bind(wx.EVT_TOOL, self.OnPortScan, id=ID_GET_INFO)
-        self.frame.Bind(wx.EVT_TOOL, self.OnCloseConsole, id=ID_CLOSE)
+        self.frame.Bind(wx.EVT_TOOL, self.OnLocalConsole, id=ID_CONSOLE)
         self.frame.Bind(wx.EVT_TOOL, self.OnCloseAll, id=ID_CLOSE_ALL)
         self.frame.Bind(wx.EVT_TOOL, self.OnHelp, id=ID_HELP)
         
@@ -95,6 +96,9 @@ class GomozToolBar:
         frm.OnShowHelpContents()
         app.MainLoop()
         
+
+    def OnLocalConsole(self, event):
+        pass
 
     def OnCloseConsole(self, event):
         self.CloseConsole(10)

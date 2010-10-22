@@ -11,5 +11,5 @@
   ob_end_clean();
   if (!empty($output)) echo str_replace(">", "&gt;", str_replace("<", "&lt;", $output));
 ?>
- </body>
+</body>
 </html>

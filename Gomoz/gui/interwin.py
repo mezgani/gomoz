@@ -320,14 +320,14 @@ class InterGomoz(wx.Frame):
                         self.lc_sources.SetStringItem(num_items, 1, str(target))
                         self.lc_sources.SetStringItem(num_items, 2, str(exploit))
                         self.lc_sources.SetStringItem(num_items, 3, str(timer))
-                        if status=="not vulnerable":
+                        if status=="vulnerable":
                             index = self.lc_sources.GetFocusedItem()
                             if index == -1:
                                 index = 0
                             color=(255,0,0,255)
                             self.lc_sources.SetItemTextColour(index+num_items, color)
                         self.lc_sources.SetStringItem(num_items, 4, status)
-                        self.statusbar.SetStatusText(str(exploit), 0)
+                        self.statusbar.SetStatusText(str(url), 0)
                         end=time.time()
                         s=("%.3f" % float(end-start))
                         self.statusbar.WriteStatus(str(s)+" sec", 3)
