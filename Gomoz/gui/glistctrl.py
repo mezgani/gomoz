@@ -94,7 +94,7 @@ class CheckListCtrl(wx.lib.mixins.listctrl.ColumnSorterMixin, threading.Thread):
         # in case we are recreating the list tickle the frame a bit so
         # it will redo the layout
         #self.SendSizeEvent()
-            
+        
 
 
     def __initialize__(self):
@@ -376,10 +376,10 @@ class CheckListCtrl(wx.lib.mixins.listctrl.ColumnSorterMixin, threading.Thread):
         self.frame.notebook_console.SetForegroundColour(wx.WHITE)
         item = self.frame.notebook_console
         self.frame.c_stack[request]=item
-        if consoles=='localhost' and exploit=="":
-            test=console.GomozConsole(self.frame.notebook_console, -1, '%', "user@"+consoles+":~ ", "local")
+        if consoles=='localhost':
+            console.GomozConsole(self.frame.notebook_console, -1, '%', "user@"+consoles+":~ ", "local")
         else:
-            test=console.GomozConsole(self.frame.notebook_console, -1, '%', "user@"+consoles+":~ ", "")
+            console.GomozConsole(self.frame.notebook_console, -1, '%', "user@"+consoles+":~ ", "")
             
 
     def OnBrowse(self, event):

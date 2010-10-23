@@ -35,10 +35,12 @@ class GomozMenuBar(gtoolbar.GomozToolBar, threading.Thread):
         self.frame.smenu_open = wx.MenuItem(self.frame.menu_file, MN_OPEN, ("&Open...\tCtrl-O"), "Open file project", wx.ITEM_NORMAL)
         bmp = wx.Bitmap("Gomoz/image/open.png", wx.BITMAP_TYPE_PNG)
         self.frame.smenu_open.SetBitmap(bmp)
+
         self.frame.menu_file.AppendItem(self.frame.smenu_open)
         self.frame.smenu_save = wx.MenuItem(self.frame.menu_file, MN_SAVS, ("&Save...\tCtrl-S"), "Save scan", wx.ITEM_NORMAL)
         bmp = wx.Bitmap("Gomoz/image/save.png", wx.BITMAP_TYPE_PNG)
         self.frame.smenu_save.SetBitmap(bmp)
+
         self.frame.menu_file.AppendItem(self.frame.smenu_save)
         self.frame.menu_file.AppendSeparator()
         self.frame.smenu_exit = wx.MenuItem(self.frame.menu_file, MN_EXIT, ("&Exit\tCtrl-Q"), "Terminate program", wx.ITEM_NORMAL)

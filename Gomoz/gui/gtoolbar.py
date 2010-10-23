@@ -25,6 +25,7 @@ class GomozToolBar:
         #self.button = wx.BitmapButton(self.mainPanel, id=-1, bitmap=imag2, pos=(120, 20), size = (imag2.GetWidth(), imag2.GetHeight()))
         self.frame.toolbar.AddSimpleTool(ID_SCAN_NEW,imag2,"Config gomoz",'Config gomoz')
 
+
         
         image="Gomoz/image/new.png"
         imag2 = wx.Image(image, wx.BITMAP_TYPE_PNG).ConvertToBitmap()

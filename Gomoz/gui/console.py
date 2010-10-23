@@ -3,6 +3,7 @@ import cmd
 import subprocess
 import re
 import Gomoz.cmd as cmd
+
 class GomozConsole(wx.Panel):
     #def __init__(self, panel, *args, **kwds):
     def __init__(self, parent, id, title, prompt, mode):
@@ -29,13 +30,10 @@ class GomozConsole(wx.Panel):
         else:
             self.textctrl.Bind(wx.EVT_TEXT_ENTER, self.__enter_cmd)
 
-
-
     def __enter_cmd(self, e):
         self.value = (self.textctrl.GetValue())
         self.eval_last_line("")
         e.Skip()
-
 
     def __enter(self, e):
         self.value = (self.textctrl.GetValue())
@@ -66,7 +64,6 @@ class GomozConsole(wx.Panel):
             retvalue = stat.GetData()
             retvalue += '\n'
             
-        #c = wx.Colour(239, 177, 177)
         c = wx.Colour(0, 0, 0)
         tc = wx.TextAttr(c)
         self.textctrl.SetDefaultStyle(tc)
@@ -74,8 +71,14 @@ class GomozConsole(wx.Panel):
         self.textctrl.AppendText(retvalue)
         self.textctrl.SetDefaultStyle(self.default_txt)
         self.textctrl.AppendText(self.prompt)
-        self.textctrl.SetInsertionPoint(GetLastPosition()-1)
-        #self.textctrl.SetInsertionPoint(0)
+        pos = self.textctrl.GetLastPosition()
+        y = self.textctrl.GetNumberOfLines()
+        (x, y) = self.textctrl.PositionToXY(self.textctrl.GetLastPosition())
+        print x,y
+        pos = self.textctrl.XYToPosition(len(self.prompt), nl)
+        print pos
+        self.textctrl.SetInsertionPoint(pos)
+        
 
 
  

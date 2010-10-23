@@ -173,7 +173,8 @@ class FirstPage(GomozIntroCgf):
         elif self.others.GetValue()==True and self.r57.GetValue()==False and self.c99.GetValue()==False:
             self.data['OPTscan']="others"
         else:
-            self.error='Please choose one scan option.'
+             wx.MessageBox("Warning, Please choose one scan option")
+             self.GetCheckBox()
             
         
 
@@ -216,6 +217,14 @@ class FirstPage(GomozIntroCgf):
                
         else:
              return self.data
+
+
+
+class SecondPage(GomozIntroCgf):
+    def __init__(self, wizard, title):
+        GomozIntroCgf.__init__(self, wizard, "Gomoz Config")
+        self.title=title
+        
 
 
       

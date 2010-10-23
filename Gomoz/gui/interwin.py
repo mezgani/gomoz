@@ -248,7 +248,7 @@ class InterGomoz(wx.Frame):
         print self.cb_proxy.GetValue()
         path = self.tc_url.GetValue()
         r1=request.Request(0, target, "", "", path, exploit, phpinc)
-        r2=request.Request(0, target, "", "", path, exploit, phpinc+'?')
+        r2=request.Request(0, target, "", "", path, exploit, txtinc+'?')
 
         """for i in range(1,3):
             req1="r%s.set%s()" % (i,mode)
