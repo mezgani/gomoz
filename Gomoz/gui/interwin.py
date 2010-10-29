@@ -3,11 +3,12 @@
 import wx, glob
 import time
 import gmenubar, glistctrl, gtoolbar, gstatusbar
-import Gomoz.request as request
-import Gomoz.scan 
+import Gomoz.scan.request as request
+import Gomoz.scan.scan as sc 
 
 from wx.py.shell import ShellFrame
 from ids import *
+import path as pt
 
 import wx.aui, wx.lib.scrolledpanel
 
@@ -18,7 +19,7 @@ class InterGomoz(wx.Frame):
         kwds["style"] = wx.DEFAULT_FRAME_STYLE | wx.MAXIMIZE_BOX
         wx.Frame.__init__(self, *args, **kwds)
 
-        ico="Gomoz/image/scf.ico"
+        ico=pt.directory()+"/Gomoz/image/scf.ico"
         self.icon = wx.Icon(ico, wx.BITMAP_TYPE_ICO) 
         self.SetIcon(self.icon)
 
@@ -220,7 +221,7 @@ class InterGomoz(wx.Frame):
         if '' in exploit:
             exploit.remove('')
         try:
-           fs=open("Gomoz/config/gomoz.cfg", 'r')
+           fs=open(pt.directory()+"/Gomoz/config/gomoz.conf", 'r')
            while 1:
              txt=fs.readline()
              
@@ -244,8 +245,13 @@ class InterGomoz(wx.Frame):
            fs.close()
         except Exception, e:
             wx.MessageBox(str(e),"Info")
-    
-        print self.cb_proxy.GetValue()
+        """
+        if self.cb_proxy.GetValue() not in self.cb_proxy.GetItems():
+            proxy = [self.cb_proxy.GetValue()]
+            if isinstance(self.cb_proxy.GetItems(),list):
+                proxy += self.cb_proxy.GetItems()
+        """
+
         path = self.tc_url.GetValue()
         r1=request.Request(0, target, "", "", path, exploit, phpinc)
         r2=request.Request(0, target, "", "", path, exploit, txtinc+'?')
@@ -258,14 +264,13 @@ class InterGomoz(wx.Frame):
             """    
         
         start=time.time()
-        
         exploits = r1.exploit
         targets  = r1.target
         path     = r1.directory
         include  = r1.include
         r1.scan()
 
-        fd=open('Gomoz/log/gomoz.log','a')          
+        fd=open(pt.directory()+'/Gomoz/log/gomoz.log','a')          
         try:
             k = 0
             v = 0
@@ -278,7 +283,7 @@ class InterGomoz(wx.Frame):
                     target = host
                 r1.port = port
                 port =  str(port)
-                s=Gomoz.scan.ScanOne(target, int(port))
+                s=sc.ScanOne(target, int(port))
                 result = s.GetResult()
                 
                 for exploit in exploits:

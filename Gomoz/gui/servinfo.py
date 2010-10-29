@@ -1,10 +1,10 @@
 import wx
-
+import path
 
 class InfoFrame(wx.Frame):
     def __init__(self,*args, **kwargs):
         wx.Frame.__init__(self, *args, **kwargs)
-        ico="Gomoz/image/scf.ico"
+        ico=path.directory()+"/Gomoz/image/scf.ico"
         self.icon = wx.Icon(ico, wx.BITMAP_TYPE_ICO) 
         self.SetIcon(self.icon)
         self.panel = wx.Panel(self, -1, size=(400, 320))

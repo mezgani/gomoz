@@ -1,11 +1,12 @@
 from ids import *
-import wx, images
+import wx
 import time
 import portscan
 import gwizard, ghelp
 import glistctrl
 import threading
 import console
+import path
  
 class GomozToolBar:
     def __init__(self, frame, panel, sources):
@@ -20,36 +21,36 @@ class GomozToolBar:
         #toolbar.AddSimpleTool(wx.NewId(), images.getNewBitmap(),"New", "Long help for 'New'")
         self.frame.toolbar.SetToolBitmapSize(wx.Size(48, 48))
         
-      	digicon="Gomoz/image/info.png"
+      	digicon=path.directory()+"/Gomoz/image/info.png"
         imag2 = wx.Image(digicon, wx.BITMAP_TYPE_PNG).ConvertToBitmap()
         #self.button = wx.BitmapButton(self.mainPanel, id=-1, bitmap=imag2, pos=(120, 20), size = (imag2.GetWidth(), imag2.GetHeight()))
         self.frame.toolbar.AddSimpleTool(ID_SCAN_NEW,imag2,"Config gomoz",'Config gomoz')
 
 
         
-        image="Gomoz/image/new.png"
+        image=path.directory()+"/Gomoz/image/new.png"
         imag2 = wx.Image(image, wx.BITMAP_TYPE_PNG).ConvertToBitmap()
         self.frame.toolbar.AddSimpleTool(ID_SCAN_ADD,imag2,"Add","Add request")
         
         #self.frame.toolbar.AddSimpleTool(ID_SCAN_NEW,images.getNewBitmap(),"New","New file")
         self.frame.toolbar.AddSeparator()
-        image="Gomoz/image/tune.png"
+        image=path.directory()+"/Gomoz/image/tune.png"
         imag2 = wx.Image(image, wx.BITMAP_TYPE_PNG).ConvertToBitmap()
         self.frame.toolbar.AddSimpleTool(ID_SCAN,imag2,"Start",'Start scan')
 	#self.frame.toolbar.AddSimpleTool(ID_SCAN,images.getFindBitmap(),"Start",'Start scan')
 	
-        image="Gomoz/image/scan.png"
+        image=path.directory()+"/Gomoz/image/scan.png"
         imag2 = wx.Image(image, wx.BITMAP_TYPE_PNG).ConvertToBitmap()
 	self.frame.toolbar.AddSimpleTool(ID_GET_INFO,imag2,"Ports scan",'Ports scan')
 	#self.frame.toolbar.AddSimpleTool(ID_GET_INFO,images.getFindDataBitmap(),"Get Info From NCBI",'Get Info')
 	self.frame.toolbar.AddSeparator()
 	
-        image="Gomoz/image/delete.png"
+        image=path.directory()+"/Gomoz/image/delete.png"
         imag2 = wx.Image(image, wx.BITMAP_TYPE_PNG).ConvertToBitmap()
         self.frame.toolbar.AddSimpleTool(ID_DELETE,imag2,"Delete request",'Delete request')
 	#self.frame.toolbar.AddSimpleTool(ID_DELETE,images.getClearBitmap(),"Delete request",'Delete request')
 
-        image="Gomoz/image/remove.png"
+        image=path.directory()+"/Gomoz/image/remove.png"
         imag2 = wx.Image(image, wx.BITMAP_TYPE_PNG).ConvertToBitmap()
         self.frame.toolbar.AddSimpleTool(ID_DELETE_ALL,imag2,"Delete All",'Delete All')
 	#self.frame.toolbar.AddSimpleTool(ID_DELETE_ALL,images.getDeleteAllBitmap(),"Delete All",'Delete All')
@@ -58,12 +59,12 @@ class GomozToolBar:
 	self.frame.toolbar.AddSeparator()
 
     
-        image="Gomoz/image/Eterm.png"
+        image=path.directory()+"/Gomoz/image/Eterm.png"
         imag2 = wx.Image(image, wx.BITMAP_TYPE_PNG).ConvertToBitmap()
         self.frame.toolbar.AddSimpleTool(ID_CLOSE,imag2, "Close console",'Close console')
         #self.frame.toolbar.AddSimpleTool(ID_CLOSE,images.getCloseOneBitmap(),"Close console",'Close console')
 
-        image="Gomoz/image/eclipse.png"
+        image=path.directory()+"/Gomoz/image/eclipse.png"
         imag2 = wx.Image(image, wx.BITMAP_TYPE_PNG).ConvertToBitmap()
 	self.frame.toolbar.AddSimpleTool(ID_CLOSE_ALL,imag2,"Whois request",'whois request')
 
@@ -72,7 +73,7 @@ class GomozToolBar:
 
       	self.frame.toolbar.AddSeparator()
      
-        digicon="Gomoz/image/Helps.png"
+        digicon=path.directory()+"/Gomoz/image/Helps.png"
         imag2 = wx.Image(digicon, wx.BITMAP_TYPE_PNG).ConvertToBitmap()
         self.frame.toolbar.AddSimpleTool(ID_HELP,imag2,"Help",'Help')
 
@@ -178,8 +179,10 @@ class GomozToolBar:
             data=page1.GetData()
             if page2.r1.GetStringSelection()=='Accept':
                if data is not None: 
-                   fd=open("Gomoz/config/gomoz.cfg",'w')
-                   fd.write('############Gomoz scan config file#############\n')
+                   f = path.directory()+"/Gomoz/config/gomoz.conf"
+                   print f
+                   fd=open(f,'w')
+                   fd.write('############### Gomoz config file #############\n')
                    fd.write('# Gomoz scanner setting\n')
                    fd.write('# Comment different directive for a new setting\n')
                    fd.write('###############################################\n')

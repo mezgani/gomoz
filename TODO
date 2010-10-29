@@ -1,0 +1,6 @@
+TODO:
+
+1. Network vulnerability Sharing
+2. Including Cross-site Scripting and SQL injection.
+Gomoz vulnerability scanner, will scan the pages founded in each site, and extract links and
+forms, then it will attack the scripts looking for error messages or some signatures.

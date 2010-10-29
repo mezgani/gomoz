@@ -1,8 +1,7 @@
 import wx
-import cmd
 import subprocess
 import re
-import Gomoz.cmd as cmd
+import Gomoz.scan.cmd as cmd
 
 class GomozConsole(wx.Panel):
     #def __init__(self, panel, *args, **kwds):
@@ -77,7 +76,7 @@ class GomozConsole(wx.Panel):
         print x,y
         pos = self.textctrl.XYToPosition(len(self.prompt), nl)
         print pos
-        self.textctrl.SetInsertionPoint(pos)
+        self.textctrl.SetInsertionPoint(GetLastPosition())
         
 
 

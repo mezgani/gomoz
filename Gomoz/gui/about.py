@@ -1,4 +1,5 @@
 import wx
+import path
 
 class AboutDialog(wx.Dialog):
     def __init__(self, parent, id, title):
@@ -12,7 +13,7 @@ class AboutDialog(wx.Dialog):
 
 
         info = wx.AboutDialogInfo()
-        info.SetIcon(wx.Icon('Gomoz/image/gomoz1.png', wx.BITMAP_TYPE_PNG))
+        info.SetIcon(wx.Icon(path.directory()+'/Gomoz/image/gomoz1.png', wx.BITMAP_TYPE_PNG))
         info.SetName('Gomoz !')
         info.SetVersion('1.0.1')
         info.SetDescription(description)

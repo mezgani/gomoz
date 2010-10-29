@@ -1,9 +1,3 @@
-##############################################################################################
-# The software still on alpha version, please don't try to use it, even of may be until      #
-# you feel that you may participate to it developement.                                      #
-##############################################################################################
-
-
 __software__= "gomoz"
 __author__ = "MEZGANI Ali handrix [@] gmail [.] com"
 __version__ = "1.0.1"
@@ -12,14 +6,17 @@ __date__ = "Date: 2006"
 __copyright__ = "Copyright (c) native labs"
 __license__="GPL"
 __credits__ = "Thanks  mam for support"
-__url__="http://http://groups.google.com/gomoz"
+__url__="http://groups.google.com/gomoz"
 
 
 
-Gomoz is an open source Web Application Security Scanner developed by securofx.
+Gomoz is an open source Web Application Security Scanner developed by 
+Native LABS.
 it has more than 5,000 Web include's Attack Signature database.
-Gomoz will test a web server in the shortest timespan possible, and produce deeply a pen test intrusion.
-It's based on backdooring technics (c99, r57, others) to inject its own exec file via POST, also spawn a shell.
+Gomoz will test a web server in the shortest timespan possible, 
+and produce deeply a pentest web intrusion.
+It's based on backdooring technics (c99, r57, others) to inject 
+its own exec file via POST, also spawn a shell.
 Gomoz is developed with python.
 
 Gomoz contains:
@@ -41,12 +38,9 @@ Gomoz contains:
 
 
 name    : is the name of a scan instance.
-Keyword : is a constant string in the included page, its important to determine if the web server are vulnerable.
-If the vulnerable server does not support GET methods so, backdooring servers is indispensible for running a console.
+Keyword : is a constant string in the included page, its important to determine 
+if the web server are vulnerable.
+If the vulnerable server does not support GET methods so, backdooring servers 
+is indispensible for running a console.
 
 
-
-TODO:
-including Cross-site Scripting and SQL injection.
-Gomoz vulnerability scanner, will scan the pages founded in each site, and extract links and
-forms, then it will attack the scripts looking for error messages or some signatures.

@@ -1,13 +1,16 @@
 import wx
-import re
+import re, socket
 import sys, random
 import wx.lib.mixins.listctrl
-import Gomoz.headers as headers
-import gmenubar,gtoolbar, gbrowser, gstatusbar 
-import servinfo, Gomoz.injector as injector
+import Gomoz.scan.headers as headers
+import gmenubar,gtoolbar,  gstatusbar 
+import servinfo, Gomoz.scan.injector as injector
 import console
-import threading
-import webbrowser      
+import threading     
+import webbrowser
+import path as pt
+#import gbrowser
+
 
 class CheckListCtrl(wx.lib.mixins.listctrl.ColumnSorterMixin, threading.Thread):
     def __init__(self, frame, panel, ctrllist):
@@ -162,36 +165,36 @@ class CheckListCtrl(wx.lib.mixins.listctrl.ColumnSorterMixin, threading.Thread):
         self.enabled = True
         self.menulogic=True
         self.frame.popupmenu = wx.Menu()
-        self.frame.startmenu = self.frame.popupmenu.Append(-1, "Localhost shell")
-        bmp = wx.Bitmap("Gomoz/image/new_scan.png", wx.BITMAP_TYPE_PNG)
+        self.frame.startmenu = self.frame.popupmenu.Append(-1, "Share it")
+        bmp = wx.Bitmap(pt.directory()+"/Gomoz/image/new_scan.png", wx.BITMAP_TYPE_PNG)
         self.frame.startmenu.SetBitmap(bmp)
         
         self.frame.popupmenu.AppendSeparator()
         self.frame.servermenu = self.frame.popupmenu.Append(-1, "View server headers")
-        bmp = wx.Bitmap("Gomoz/image/servinfo.png", wx.BITMAP_TYPE_PNG)
+        bmp = wx.Bitmap(pt.directory()+"/Gomoz/image/servinfo.png", wx.BITMAP_TYPE_PNG)
         self.frame.servermenu.SetBitmap(bmp)
         
         self.frame.popupmenu.AppendSeparator()
         self.frame.injectmenu = self.frame.popupmenu.Append(-1, "Inject php backdoor")
-        bmp = wx.Bitmap("Gomoz/image/inject.png", wx.BITMAP_TYPE_PNG)
+        bmp = wx.Bitmap(pt.directory()+"/Gomoz/image/inject.png", wx.BITMAP_TYPE_PNG)
         self.frame.injectmenu.SetBitmap(bmp)
         
         self.frame.popupmenu.AppendSeparator()
         self.frame.consolemenu = self.frame.popupmenu.Append(-1, "Console")
 
-        bmp = wx.Bitmap("Gomoz/image/terminal.png", wx.BITMAP_TYPE_PNG)
+        bmp = wx.Bitmap(pt.directory()+"/Gomoz/image/terminal.png", wx.BITMAP_TYPE_PNG)
         self.frame.consolemenu.SetBitmap(bmp)
         
         self.frame.browsemenu = self.frame.popupmenu.Append(-1, "Browse url")
         self.frame.popupmenu.AppendSeparator()
-        bmp = wx.Bitmap("Gomoz/image/firefox6.png", wx.BITMAP_TYPE_PNG)
+        bmp = wx.Bitmap(pt.directory()+"/Gomoz/image/firefox6.png", wx.BITMAP_TYPE_PNG)
         self.frame.browsemenu.SetBitmap(bmp)
         
         self.frame.deletemenu = self.frame.popupmenu.Append(-1, "Delete")
-        bmp = wx.Bitmap("Gomoz/image/remove16.png", wx.BITMAP_TYPE_PNG)
-        self.frame.deletemenu.SetBitmap(bmp)
+        bmp = wx.Image(pt.directory()+"/Gomoz/image/remove16.png", wx.BITMAP_TYPE_PNG)
+        self.frame.deletemenu.SetBitmap(bmp.ConvertToBitmap())
 
-        self.frame.Bind(wx.EVT_MENU, self.OnLocalShell, self.frame.startmenu)
+        self.frame.Bind(wx.EVT_MENU, self.OnShare, self.frame.startmenu)
         self.frame.Bind(wx.EVT_MENU, self.OnInjectCmd, self.frame.injectmenu)
         self.frame.Bind(wx.EVT_MENU, self.OnServerInfo, self.frame.servermenu)
         self.frame.Bind(wx.EVT_MENU, self.OnBrowse, self.frame.browsemenu)
@@ -199,7 +202,6 @@ class CheckListCtrl(wx.lib.mixins.listctrl.ColumnSorterMixin, threading.Thread):
         self.frame.Bind(wx.EVT_UPDATE_UI, self.OnUpdateSimple, self.frame.consolemenu)  
         self.frame.Bind(wx.EVT_MENU, self.OnRemove, self.frame.deletemenu)
         self.frame.lc_sources.Bind(wx.EVT_CONTEXT_MENU, self.OnShowPopup)
-
 
 
 
@@ -212,7 +214,7 @@ class CheckListCtrl(wx.lib.mixins.listctrl.ColumnSorterMixin, threading.Thread):
          else :
            index = self.frame.lc_sources.GetFirstSelected()
 
-           dico=self.SetData('Gomoz/config/gomoz.cfg')
+           dico=self.SetData(pt.directory()+'/Gomoz/config/gomoz.conf')
            while index != -1:
                 request=self.frame.lc_sources.GetItem(index, 0).GetText()
                 server=self.frame.lc_sources.GetItem(index, 1).GetText()
@@ -347,10 +349,16 @@ class CheckListCtrl(wx.lib.mixins.listctrl.ColumnSorterMixin, threading.Thread):
     def SetNameConsole(self, tab, name):
         tab.SetName(name)        
 
-
-
-    def OnLocalShell(self, event):
-        pass
+    def OnShare(self, event):
+        index   = gmenubar.GomozMenuBar.GetSelection(self.frame.menu)
+        request = self.frame.lc_sources.GetItem(index, 0).GetText()
+        target  = self.frame.lc_sources.GetItem(index, 1).GetText()
+        exploit = self.frame.lc_sources.GetItem(index, 2).GetText()
+        date    = self.frame.lc_sources.GetItem(index, 3).GetText()
+        status  = self.frame.lc_sources.GetItem(index, 4).GetText()
+    
+        wx.MessageBox(target+" "+exploit)
+        
 
 
     def OnConsole(self, event):
@@ -376,7 +384,9 @@ class CheckListCtrl(wx.lib.mixins.listctrl.ColumnSorterMixin, threading.Thread):
         self.frame.notebook_console.SetForegroundColour(wx.WHITE)
         item = self.frame.notebook_console
         self.frame.c_stack[request]=item
-        if consoles=='localhost':
+
+        consoles=re.findall('\w+',consoles)[0]
+        if socket.gethostbyname(consoles)=="127.0.0.1":
             console.GomozConsole(self.frame.notebook_console, -1, '%', "user@"+consoles+":~ ", "local")
         else:
             console.GomozConsole(self.frame.notebook_console, -1, '%', "user@"+consoles+":~ ", "")
@@ -397,7 +407,7 @@ class CheckListCtrl(wx.lib.mixins.listctrl.ColumnSorterMixin, threading.Thread):
             ext=re.findall("\.\w{3}", exploit)
             ext = ext[0]
             if exploit.find(ext)>0:
-                include = self.OnGetData('Gomoz/config/gomoz.cfg', ext)
+                include = self.OnGetData(pt.directory()+'/Gomoz/config/gomoz.conf', ext)
                 print include
                 exploit = str(exploit).replace('[path]', include)
         except Exception as e:

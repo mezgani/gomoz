@@ -1,5 +1,6 @@
 import wx
 import wx.wizard
+import path
 
 class GomozIntroCgf(wx.wizard.WizardPageSimple):
     def __init__(self, parent, title):
@@ -22,7 +23,7 @@ class FirstPage(GomozIntroCgf):
         self.jpginc=''
         self.keyword=''
         self.scan=''
-        self.SetData('Gomoz/config/gomoz.cfg')
+        self.SetData(path.directory() + '/Gomoz/config/gomoz.conf')
         
         self.label_2=wx.StaticText(self, -1, "include.PHP", pos=(10, 130))
         self.input_2=wx.TextCtrl(self, -1, self.phpinc, size=(180,20),pos=(80,130))
@@ -240,7 +241,7 @@ class LastPage(GomozIntroCgf):
         self.label_1=wx.StaticText(self, -1, text1, pos=(10,130))
         self.label_2=wx.StaticText(self, -1, text2, pos=(10,160))
                 
-        image="Gomoz/image/gomoz1.png"
+        image=path.directory() + "/Gomoz/image/gomoz1.png"
         imag = wx.Image(image, wx.BITMAP_TYPE_PNG).ConvertToBitmap()
         self.button = wx.StaticBitmap(self, id=-1, bitmap=imag, pos=(420, 20), size = (imag.GetWidth(), imag.GetHeight()-5))
         self.radioList=["Accept", "Decline"]

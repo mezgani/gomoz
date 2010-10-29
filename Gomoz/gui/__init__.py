@@ -1,2 +1,2 @@
-__all__=['codes','data','gtoolbar','ids','start','interwin','about',
-         'gmenubar','images','glistctrl','menubrush','portscan']
+__all__=['codes','gtoolbar','ids','start','interwin','about',
+         'gmenubar','glistctrl','portscan']

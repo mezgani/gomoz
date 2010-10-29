@@ -1,7 +1,8 @@
 import wx
 import time
 import threading
-import Gomoz.scan as scan
+import Gomoz.scan.scan as scan
+import path
 
 class PortScanFrame(wx.Frame,threading.Thread):
     def __init__(self, *args, **kwargs):
@@ -12,7 +13,7 @@ class PortScanFrame(wx.Frame,threading.Thread):
         
         #self.start = False
         self.panel = wx.Panel(self, -1, size=(400, 320))
-        ico="Gomoz/image/scf.ico"
+        ico=path.directory()+"/Gomoz/image/scf.ico"
         self.icon = wx.Icon(ico, wx.BITMAP_TYPE_ICO) 
         self.SetIcon(self.icon) 
 

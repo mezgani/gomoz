@@ -1,12 +1,13 @@
 import wx, time, os, sys, re
 from xml.dom.minidom import Document
-import xmlparser
 import interwin, gtoolbar, about
-import glistctrl, data, gstatusbar, ghelp
+import glistctrl, gstatusbar, ghelp
 from ids import *
-
+import path
 import threading
-import Gomoz.gsqlite as gsqlite
+
+import Gomoz.db.gsqlite as gsqlite
+import Gomoz.db.xmlparser as xmlparser
 
 class GomozMenuBar(gtoolbar.GomozToolBar, threading.Thread):
     
@@ -27,24 +28,24 @@ class GomozMenuBar(gtoolbar.GomozToolBar, threading.Thread):
             
         self.frame.menu_file = wx.Menu()
         self.frame.smenu_new = wx.MenuItem(self.frame.menu_file, MN_NEW, ("&New...\tCtrl-N"), "New scan", wx.ITEM_NORMAL)
-        bmp = wx.Bitmap("Gomoz/image/new_scan.png", wx.BITMAP_TYPE_PNG)
-        self.frame.smenu_new.SetBitmap(bmp)
+        bmp = wx.Image(path.directory()+"/Gomoz/image/new_scan.png", wx.BITMAP_TYPE_PNG)
+        self.frame.smenu_new.SetBitmap(bmp.ConvertToBitmap())
         
         self.frame.menu_file.AppendItem(self.frame.smenu_new)
         self.frame.menu_file.AppendSeparator()
         self.frame.smenu_open = wx.MenuItem(self.frame.menu_file, MN_OPEN, ("&Open...\tCtrl-O"), "Open file project", wx.ITEM_NORMAL)
-        bmp = wx.Bitmap("Gomoz/image/open.png", wx.BITMAP_TYPE_PNG)
+        bmp = wx.Bitmap(path.directory()+"/Gomoz/image/open.png", wx.BITMAP_TYPE_PNG)
         self.frame.smenu_open.SetBitmap(bmp)
 
         self.frame.menu_file.AppendItem(self.frame.smenu_open)
         self.frame.smenu_save = wx.MenuItem(self.frame.menu_file, MN_SAVS, ("&Save...\tCtrl-S"), "Save scan", wx.ITEM_NORMAL)
-        bmp = wx.Bitmap("Gomoz/image/save.png", wx.BITMAP_TYPE_PNG)
+        bmp = wx.Bitmap(path.directory()+"/Gomoz/image/save.png", wx.BITMAP_TYPE_PNG)
         self.frame.smenu_save.SetBitmap(bmp)
 
         self.frame.menu_file.AppendItem(self.frame.smenu_save)
         self.frame.menu_file.AppendSeparator()
         self.frame.smenu_exit = wx.MenuItem(self.frame.menu_file, MN_EXIT, ("&Exit\tCtrl-Q"), "Terminate program", wx.ITEM_NORMAL)
-        bmp = wx.Bitmap("Gomoz/image/exit.png", wx.BITMAP_TYPE_PNG)
+        bmp = wx.Bitmap(path.directory()+"/Gomoz/image/exit.png", wx.BITMAP_TYPE_PNG)
         self.frame.smenu_exit.SetBitmap(bmp)
         self.frame.menu_file.AppendItem(self.frame.smenu_exit)
         self.frame_menubar.Append(self.frame.menu_file, _("&File"))
@@ -52,19 +53,19 @@ class GomozMenuBar(gtoolbar.GomozToolBar, threading.Thread):
 
         self.frame.menu_data = wx.Menu()
         self.frame.smenu_selcsho = wx.MenuItem(self.frame.menu_data, MN_SELCSHO, ("&Scan port \tCtrl-Shift-A"),"Scan ports of selected target", wx.ITEM_NORMAL)
-        bmp = wx.Bitmap("Gomoz/image/scan_port.png", wx.BITMAP_TYPE_PNG)
+        bmp = wx.Bitmap(path.directory()+"/Gomoz/image/scan_port.png", wx.BITMAP_TYPE_PNG)
         self.frame.smenu_selcsho.SetBitmap(bmp)
         
         self.frame.smenu_exploit = wx.MenuItem(self.frame.menu_data, MN_EXPLOIT, ("&Exploit...\tCtrl-E"), "Load exploits from file", wx.ITEM_NORMAL)
-        bmp = wx.Bitmap("Gomoz/image/x.png", wx.BITMAP_TYPE_PNG)
+        bmp = wx.Bitmap(path.directory()+"/Gomoz/image/x.png", wx.BITMAP_TYPE_PNG)
         self.frame.smenu_exploit.SetBitmap(bmp)
         
         self.frame.smenu_proxy   = wx.MenuItem(self.frame.menu_data, MN_PROXY, ("&Proxy...\tCtrl-P"), "Load proxies from file", wx.ITEM_NORMAL)
-        bmp = wx.Bitmap("Gomoz/image/proxy.png", wx.BITMAP_TYPE_PNG)
+        bmp = wx.Bitmap(path.directory()+"/Gomoz/image/proxy.png", wx.BITMAP_TYPE_PNG)
         self.frame.smenu_proxy.SetBitmap(bmp)
         
         self.frame.smenu_target  = wx.MenuItem(self.frame.menu_data, MN_TARGET, ("&Targets...\tCtrl-T"), "Load hosts from file", wx.ITEM_NORMAL)
-        bmp = wx.Bitmap("Gomoz/image/target.png", wx.BITMAP_TYPE_PNG)
+        bmp = wx.Bitmap(path.directory()+"/Gomoz/image/target.png", wx.BITMAP_TYPE_PNG)
         self.frame.smenu_target.SetBitmap(bmp)
         
         self.frame.menu_data.AppendItem(self.frame.smenu_target)
@@ -95,13 +96,13 @@ class GomozMenuBar(gtoolbar.GomozToolBar, threading.Thread):
       
         self.frame.menu_help = wx.Menu()
         self.frame.smenu_help= wx.MenuItem(self.frame.menu_help, MN_HELP, ("&Help...\tCtrl-H"), "Help files.", wx.ITEM_NORMAL)
-        bmp = wx.Bitmap("Gomoz/image/help16.png", wx.BITMAP_TYPE_PNG)
+        bmp = wx.Bitmap(path.directory()+"/Gomoz/image/help16.png", wx.BITMAP_TYPE_PNG)
         self.frame.smenu_help.SetBitmap(bmp)
         self.frame.menu_help.AppendItem(self.frame.smenu_help)
 
         self.frame.menu_help.AppendSeparator()
-        self.frame.smenu_about = wx.MenuItem(self.frame.menu_help, MN_ABOUT, ("&About...\tCtrl-B"), "About gomoz, securfox inc.", wx.ITEM_NORMAL)
-        bmp = wx.Bitmap("Gomoz/image/aboutinfo.png", wx.BITMAP_TYPE_PNG)
+        self.frame.smenu_about = wx.MenuItem(self.frame.menu_help, MN_ABOUT, ("&About...\tCtrl-B"), "About gomoz, Native LABS inc.", wx.ITEM_NORMAL)
+        bmp = wx.Bitmap(path.directory()+"/Gomoz/image/aboutinfo.png", wx.BITMAP_TYPE_PNG)
         self.frame.smenu_about.SetBitmap(bmp)
         self.frame.menu_help.AppendItem(self.frame.smenu_about)
     
